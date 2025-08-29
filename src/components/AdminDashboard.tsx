@@ -124,7 +124,7 @@ export default function AdminDashboard() {
                 selected={uploadDate}
                 onSelect={setUploadDate}
                 captionLayout="dropdown-buttons"
-                fromYear={2015}
+                fromYear={1970}
                 toYear={new Date().getFullYear()}
                 initialFocus
               />
