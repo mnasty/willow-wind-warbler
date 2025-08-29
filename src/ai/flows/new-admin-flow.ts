@@ -99,10 +99,10 @@ const createNewAdminFlow = ai.defineFlow(
     } catch (e: any) {
       console.error('Error in createNewAdminFlow:', e);
       // Provide a more user-friendly error message
-      let errorMessage = 'An unexpected error occurred.' + '\n' + e.message;
-      if (e.message.includes('auth/email-already-in-use')) {
+      let errorMessage = 'An unexpected error occurred. Please try again.';
+      if (e.code === 'auth/email-already-in-use' || e.message.includes('auth/email-already-in-use')) {
           errorMessage = 'This email address is already registered as an administrator.';
-      } else if (e.message.includes('auth/invalid-email')) {
+      } else if (e.code === 'auth/invalid-email' || e.message.includes('auth/invalid-email')) {
           errorMessage = 'The email address provided is not valid.';
       }
       return { success: false, error: errorMessage };
