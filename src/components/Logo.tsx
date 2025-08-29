@@ -13,7 +13,7 @@ const Logo = (props: SVGProps<SVGSVGElement>) => (
   >
     {/* Silo */}
     <path d="M14 21V9h7v12" fill="hsl(var(--accent))" />
-    <path d="M14 9l3.5-4.5L21 9" />
+    <path d="M14 9 a3.5 3.5 0 0 1 7 0" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" />
     <path d="M14 21V9" stroke="hsl(var(--foreground))" />
     <path d="M21 21V9" stroke="hsl(var(--foreground))" />
     <path d="M14 9h7" stroke="hsl(var(--foreground))" />
