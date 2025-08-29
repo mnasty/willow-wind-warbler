@@ -80,7 +80,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-4xl font-headline font-bold text-primary">Administration</h1>
+        <h1 className="text-4xl font-headline font-bold text-foreground">Administration</h1>
         <p className="text-lg text-muted-foreground mt-2">
           Manage newsletter editions.
         </p>

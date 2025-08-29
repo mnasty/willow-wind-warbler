@@ -27,7 +27,7 @@ export default async function HistoricalEditionsPage() {
   return (
     <div className="space-y-8 font-fredoka">
       <header>
-        <h1 className="text-4xl font-headline font-bold text-primary tracking-wide">Historical Editions</h1>
+        <h1 className="text-4xl font-headline font-bold text-foreground tracking-wide">Historical Editions</h1>
         <p className="text-lg text-muted-foreground mt-2">
           Browse through the archive of all past newsletter editions.
         </p>
@@ -37,7 +37,7 @@ export default async function HistoricalEditionsPage() {
         <Accordion type="single" collapsible defaultValue={sortedYears[0]} className="w-full">
           {sortedYears.map((year) => (
             <AccordionItem value={year} key={year}>
-              <AccordionTrigger className="text-2xl font-headline text-primary/80">
+              <AccordionTrigger className="text-2xl font-headline text-foreground/80">
                 {year}
               </AccordionTrigger>
               <AccordionContent>
