@@ -30,7 +30,7 @@ const newsletterFolder = 'newsletters';
 // --- AUTH FUNCTIONS ---
 
 const actionCodeSettings = {
-    url: typeof window !== 'undefined' ? `${window.location.origin}/finish-login` : 'http://localhost:9002/finish-login',
+    url: process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}/finish-login` : 'http://localhost:9002/finish-login',
     handleCodeInApp: true,
 };
 
