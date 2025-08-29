@@ -16,45 +16,6 @@ const NewAdminOutputSchema = z.object({
 });
 export type NewAdminOutput = z.infer<typeof NewAdminOutputSchema>;
 
-const welcomeEmailPrompt = ai.definePrompt({
-    name: 'welcomeEmailPrompt',
-    input: {
-        schema: z.object({
-            email: z.string(),
-            password: z.string(),
-            loginUrl: z.string(),
-        })
-    },
-    output: {
-        schema: z.object({
-            subject: z.string(),
-            body: z.string(),
-        })
-    },
-    prompt: `
-    You are an AI assistant for the "Willow Wind Warbler" newsletter. Your task is to generate a welcome email for a new administrator.
-
-    The email should have the following subject:
-    "Welcome to the Willow Wind Warbler Administration Panel"
-
-    The body of the email should be HTML. It should be simple, clean, and match the friendly, slightly rustic theme of the website.
-    - Start with a friendly welcome message.
-    - Clearly state the user's email address.
-    - Provide the temporary password.
-    - Include a prominent link or button for the user to log in.
-    - Do not include an unsubscribe link.
-    - Use the provided password and login URL. Do not make up your own.
-
-    Email: {{{email}}}
-    Password: {{{password}}}
-    Login URL: {{{loginUrl}}}
-    `,
-    config: {
-        model: 'googleai/gemini-2.5-pro'
-    }
-});
-
-
 // This is a placeholder. In a real app, you'd use a transactional email service.
 async function sendEmail(to: string, subject: string, htmlBody: string) {
   console.log('**************************************************');
@@ -90,8 +51,52 @@ const createNewAdminFlow = ai.defineFlow(
       // 3. Generate the welcome email content
       const loginUrl = process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}/login` : 'http://localhost:9002/login';
       
-      const emailResponse = await welcomeEmailPrompt({ email, password, loginUrl });
-      const { subject, body } = emailResponse.output!;
+      const subject = "Welcome to the Willow Wind Warbler Administration Panel";
+      const body = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${subject}</title>
+          <style>
+              body { font-family: 'PT Sans', sans-serif; margin: 0; padding: 0; background-color: #f0f4f8; }
+              .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
+              .header { background-color: #bccd9c; padding: 20px; text-align: center; }
+              .header h1 { margin: 0; color: #0D248C; font-family: 'Playfair Display', serif; }
+              .content { padding: 30px; color: #333333; line-height: 1.6; }
+              .content p { margin: 0 0 15px; }
+              .credentials { background-color: #f9f9f9; border-left: 4px solid #0D248C; padding: 15px; margin: 20px 0; }
+              .credentials strong { color: #0D248C; }
+              .button-container { text-align: center; margin-top: 30px; }
+              .button { background-color: #6F6521; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; }
+              .footer { background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #666666; }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <div class="header">
+                  <h1>Willow Wind Warbler</h1>
+              </div>
+              <div class="content">
+                  <h2>Welcome, Administrator!</h2>
+                  <p>An administrator account has been created for you for the Willow Wind Warbler newsletter.</p>
+                  <p>Here are your temporary login credentials. We recommend you change your password after your first login.</p>
+                  <div class="credentials">
+                      <p><strong>Email:</strong> ${email}</p>
+                      <p><strong>Password:</strong> <code>${password}</code></p>
+                  </div>
+                  <div class="button-container">
+                      <a href="${loginUrl}" class="button">Login to Admin Panel</a>
+                  </div>
+              </div>
+              <div class="footer">
+                  <p>&copy; ${new Date().getFullYear()} Willow Wind Warbler. All rights reserved.</p>
+              </div>
+          </div>
+      </body>
+      </html>
+      `;
 
       // 4. Send the welcome email
       await sendEmail(email, subject, body);
