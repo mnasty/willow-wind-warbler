@@ -17,3 +17,5 @@
 - Font pairing: 'Playfair' (serif) for headings and titles, lending an elegant and classic feel; 'PT Sans' (sans-serif) for body text, providing excellent readability.
 - Incorporate custom icons that suggest the blend of nature and technology represented in a modern design; streamline file representation in historical list and admin interfaces using minimalist document icons, enhancing visual simplicity
 - Employ a clean, grid-based layout to present newsletter editions; ensure that controls such as the authentication form, buttons, checkboxes in the administration section are well spaced and visually distinct, which greatly helps to reduce cognitive load.
+
+:)
