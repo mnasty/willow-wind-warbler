@@ -138,23 +138,29 @@ export const getLatestNewsletter = async (): Promise<Newsletter | null> => {
 export const uploadNewsletter = async (file: File, date: Date): Promise<void> => {
     const fileName = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}-${date.getFullYear()}.pdf`;
     const newsletterRef = ref(storage, `${newsletterFolder}/${fileName}`);
-
+    
+    // Check if file already exists
     try {
         await getDownloadURL(newsletterRef);
+        // If we get here, the file exists.
         throw new Error('A newsletter for this date already exists.');
     } catch (error: any) {
-        if (error.code !== 'storage/object-not-found') {
+        // This is the expected error when the file does not exist.
+        if (error.code === 'storage/object-not-found') {
+            // The file doesn't exist, so we can proceed with the upload.
+            try {
+                await uploadBytes(newsletterRef, file);
+            } catch (uploadError: any) {
+                if (uploadError.code === 'storage/unauthorized') {
+                    throw new Error('Permission denied. Please check your Firebase Storage security rules.');
+                }
+                // Re-throw other upload errors
+                throw uploadError;
+            }
+        } else {
+            // An unexpected error occurred during the check.
            throw error;
         }
-    }
-    
-    try {
-        await uploadBytes(newsletterRef, file);
-    } catch (error: any) {
-        if (error.code === 'storage/unauthorized') {
-            throw new Error('Permission denied. Please check your Firebase Storage security rules.');
-        }
-        throw error;
     }
 };
 
