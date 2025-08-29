@@ -24,7 +24,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { NewAdminForm } from './auth/NewAdminForm';
-import { UpdatePasswordForm } from './auth/UpdatePasswordForm';
 
 export default function AdminDashboard() {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
@@ -98,32 +97,6 @@ export default function AdminDashboard() {
           Manage newsletter editions and administrators.
         </p>
       </header>
-
-      <div className="space-y-8">
-        <Card>
-            <CardHeader>
-            <CardTitle>Update Password</CardTitle>
-            <CardDescription>
-                Update the password for your administrator account.
-            </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <UpdatePasswordForm />
-            </CardContent>
-        </Card>
-        <Card>
-            <CardHeader>
-            <CardTitle>New Administrator</CardTitle>
-            <CardDescription>
-                Create a new administrator account. A secure password will be generated and emailed to the user.
-            </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <NewAdminForm />
-            </CardContent>
-        </Card>
-      </div>
-
 
       <Card>
         <CardHeader>
@@ -212,6 +185,18 @@ export default function AdminDashboard() {
             </ul>
           )}
         </CardContent>
+      </Card>
+      
+      <Card>
+          <CardHeader>
+          <CardTitle>New Administrator</CardTitle>
+          <CardDescription>
+              Create a new administrator account. A secure password will be generated and emailed to the user.
+          </CardDescription>
+          </CardHeader>
+          <CardContent>
+              <NewAdminForm />
+          </CardContent>
       </Card>
     </div>
   );

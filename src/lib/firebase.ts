@@ -7,7 +7,6 @@ import {
   signInWithEmailLink as firebaseSignInWithEmailLink,
   createUserWithEmailAndPassword as firebaseCreateUser,
   signOut as firebaseSignOut,
-  updatePassword
 } from 'firebase/auth';
 import {
   getStorage,
@@ -63,15 +62,6 @@ export const signOut = async (): Promise<void> => {
 export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void): (() => void) => {
   return onFirebaseAuthStateChanged(auth, callback);
 };
-
-export const updateUserPassword = async (newPassword: string): Promise<void> => {
-    const user = auth.currentUser;
-    if (user) {
-        return updatePassword(user, newPassword);
-    }
-    throw new Error('No user is currently signed in.');
-};
-
 
 // --- STORAGE FUNCTIONS ---
 
