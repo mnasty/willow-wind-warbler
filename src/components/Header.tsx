@@ -41,7 +41,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group">
             <Logo className="h-8 w-8 text-primary transition-transform group-hover:rotate-12" />
-            <span className="text-3xl font-brand font-bold text-primary">
+            <span className="text-3xl font-fredoka font-bold text-primary">
               Willow Wind Warbler
             </span>
           </Link>
