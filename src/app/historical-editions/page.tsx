@@ -25,7 +25,7 @@ export default async function HistoricalEditionsPage() {
   const sortedYears = Object.keys(editionsByYear).sort((a, b) => Number(b) - Number(a));
 
   return (
-    <div className="space-y-8 font-headline">
+    <div className="space-y-8 font-fredoka">
       <header>
         <h1 className="text-4xl font-headline font-bold text-primary">Historical Editions</h1>
         <p className="text-lg text-muted-foreground mt-2">
@@ -49,7 +49,7 @@ export default async function HistoricalEditionsPage() {
                               <FileText className="w-10 h-10 mx-auto text-muted-foreground group-hover:text-primary transition-colors" />
                           </CardHeader>
                           <CardContent className="text-center">
-                              <p className="font-headline text-sm">{newsletter.name}</p>
+                              <p className="text-sm">{newsletter.name}</p>
                               <p className="text-xs text-muted-foreground">{newsletter.date.toLocaleDateString()}</p>
                           </CardContent>
                       </Card>
@@ -63,10 +63,10 @@ export default async function HistoricalEditionsPage() {
       ) : (
         <Card className="flex flex-col items-center justify-center p-12">
           <CardHeader>
-            <CardTitle className="font-headline">No Archives Found</CardTitle>
+            <CardTitle>No Archives Found</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-headline">The historical archive is currently empty.</p>
+            <p>The historical archive is currently empty.</p>
           </CardContent>
         </Card>
       )}

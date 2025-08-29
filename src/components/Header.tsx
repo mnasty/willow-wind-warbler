@@ -18,7 +18,6 @@ import {
 const navLinks = [
   { href: '/latest-edition', label: 'Latest Edition' },
   { href: '/historical-editions', label: 'Historical Editions' },
-  { href: '/font-examples', label: 'Font Examples' },
 ];
 
 const adminLink = { href: '/administration', label: 'Administration' };
