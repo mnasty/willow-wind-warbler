@@ -11,8 +11,8 @@ export default {
     extend: {
       fontFamily: {
         body: ['"PT Sans"', 'sans-serif'],
-        headline: ['"Playfair Display"', 'serif'],
-        brand: ['"Lilita One"', 'cursive'],
+        headline: ['"Lilita One"', 'cursive'],
+        brand: ['"Playfair Display"', 'serif'],
         code: ['monospace'],
       },
       colors: {
