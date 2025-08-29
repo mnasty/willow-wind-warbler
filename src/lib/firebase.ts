@@ -77,20 +77,19 @@ export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void
   };
 };
 
-export const uploadNewsletter = async (file: File): Promise<void> => {
-  console.log(`Mock Firebase: Uploading file ${file.name}.`);
-  const today = new Date();
-  const name = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}.pdf`;
+export const uploadNewsletter = async (file: File, date: Date): Promise<void> => {
+  console.log(`Mock Firebase: Uploading file ${file.name} for date ${date}.`);
+  const name = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}-${date.getFullYear()}.pdf`;
 
   if (mockNewsletterStore.find(n => n.name === name)) {
-    return Promise.reject(new Error('A newsletter for today already exists.'));
+    return Promise.reject(new Error('A newsletter for this date already exists.'));
   }
 
   const newNewsletter: Newsletter = {
     id: name,
     name: name,
     url: URL.createObjectURL(file), // create a temporary local URL for display
-    date: today,
+    date: date,
   };
   mockNewsletterStore.unshift(newNewsletter);
   mockNewsletterStore.sort((a, b) => b.date.getTime() - a.date.getTime());

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Trash2, Upload } from 'lucide-react';
+import { Calendar as CalendarIcon, Loader2, Trash2, Upload } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,11 +19,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 export default function AdminDashboard() {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState<File | null>(null);
+  const [uploadDate, setUploadDate] = useState<Date | undefined>();
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const { toast } = useToast();
@@ -50,12 +55,18 @@ export default function AdminDashboard() {
       toast({ variant: 'destructive', title: 'No file selected' });
       return;
     }
+    if (!uploadDate) {
+      toast({ variant: 'destructive', title: 'No date selected' });
+      return;
+    }
     setIsUploading(true);
     try {
-      await uploadNewsletter(file);
+      await uploadNewsletter(file, uploadDate);
       toast({ title: 'Upload successful', description: 'The newsletter has been added.' });
-      setFile(null); // Reset file input
-      document.getElementById('file-upload')!.value = ''; // A bit of a hack to clear the input field
+      setFile(null);
+      setUploadDate(undefined);
+      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+      if(fileInput) fileInput.value = '';
       await fetchNewsletters();
     } catch (error: any) {
       toast({ variant: 'destructive', title: 'Upload failed', description: error.message });
@@ -90,12 +101,34 @@ export default function AdminDashboard() {
         <CardHeader>
           <CardTitle>Upload New Newsletter</CardTitle>
           <CardDescription>
-            Upload a new PDF file. It will be named automatically based on the upload date (MM-DD-YYYY.pdf).
+            Select a PDF file and a date for the newsletter. The file will be named based on the selected date (MM-DD-YYYY.pdf).
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row gap-4">
+           <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[280px] justify-start text-left font-normal",
+                  !uploadDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {uploadDate ? format(uploadDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={uploadDate}
+                onSelect={setUploadDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
           <Input id="file-upload" type="file" accept=".pdf" onChange={handleFileChange} className="max-w-xs" />
-          <Button onClick={handleUpload} disabled={isUploading || !file}>
+          <Button onClick={handleUpload} disabled={isUploading || !file || !uploadDate}>
             {isUploading ? <Loader2 className="animate-spin mr-2" /> : <Upload className="mr-2" />}
             Upload
           </Button>
