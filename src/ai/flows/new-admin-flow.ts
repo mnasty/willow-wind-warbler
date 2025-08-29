@@ -105,7 +105,7 @@ const createNewAdminFlow = ai.defineFlow(
     } catch (e: any) {
       console.error('Error in createNewAdminFlow:', e);
       // Provide a more user-friendly error message
-      let errorMessage = 'An unexpected error occurred.';
+      let errorMessage = 'An unexpected error occurred.' + '\n' + e.message;
       if (e.message.includes('auth/email-already-in-use')) {
           errorMessage = 'This email address is already registered as an administrator.';
       } else if (e.message.includes('auth/invalid-email')) {
