@@ -27,7 +27,7 @@ export default async function HistoricalEditionsPage() {
   return (
     <div className="space-y-8 font-fredoka">
       <header>
-        <h1 className="text-4xl font-headline font-bold text-primary">Historical Editions</h1>
+        <h1 className="text-4xl font-headline font-bold text-primary tracking-wide">Historical Editions</h1>
         <p className="text-lg text-muted-foreground mt-2">
           Browse through the archive of all past newsletter editions.
         </p>
