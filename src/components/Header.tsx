@@ -18,8 +18,10 @@ import {
 const navLinks = [
   { href: '/latest-edition', label: 'Latest Edition' },
   { href: '/historical-editions', label: 'Historical Editions' },
-  { href: '/administration', label: 'Administration' },
 ];
+
+const adminLink = { href: '/administration', label: 'Administration' };
+
 
 export default function Header() {
   const { user } = useAuth();
@@ -30,6 +32,8 @@ export default function Header() {
     await signOut();
     router.push('/login');
   };
+
+  const visibleNavLinks = user ? [...navLinks, adminLink] : navLinks;
 
   return (
     <header className="bg-card shadow-md">
@@ -42,7 +46,7 @@ export default function Header() {
             </span>
           </Link>
           <nav className="hidden md:flex items-center gap-2">
-            {navLinks.map((link) => (
+            {visibleNavLinks.map((link) => (
               <Button
                 key={link.href}
                 variant="ghost"
@@ -75,7 +79,7 @@ export default function Header() {
                 <Button variant="outline">Menu</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                {navLinks.map((link) => (
+                {visibleNavLinks.map((link) => (
                   <DropdownMenuItem key={link.href} asChild>
                     <Link href={link.href}>{link.label}</Link>
                   </DropdownMenuItem>
