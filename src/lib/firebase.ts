@@ -100,6 +100,20 @@ export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void
   };
 };
 
+export const updateUserPassword = async (password: string): Promise<void> => {
+    console.log(`Mock Firebase: Attempting to update password.`);
+    if (!currentUser) {
+        throw new Error('No user is currently signed in.');
+    }
+    const userRecord = mockUserStore[currentUser.uid];
+    if (userRecord) {
+        userRecord.password = password;
+        console.log(`Mock Firebase: Password updated successfully for ${userRecord.email}.`);
+        return Promise.resolve();
+    }
+    throw new Error('Current user not found in store.');
+}
+
 export const uploadNewsletter = async (file: File, date: Date): Promise<void> => {
   console.log(`Mock Firebase: Uploading file ${file.name} for date ${date}.`);
   const name = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}-${date.getFullYear()}.pdf`;
