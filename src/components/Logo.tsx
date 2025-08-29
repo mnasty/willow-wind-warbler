@@ -12,7 +12,7 @@ const Logo = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     {/* Barn */}
-    <path d="M4 21h10v-8l-5-4-5 4v8z" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))"/>
+    <path d="M4 21h10V9l-5-4-5 4v12z" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))"/>
     <path d="M4 21h10" stroke="hsl(var(--foreground))" strokeLinecap="butt"/>
     <path d="M7 15h4v6h-4v-6z" fill="hsl(var(--background))" stroke="hsl(var(--foreground))"/>
     <path d="M7 18h4"/>
