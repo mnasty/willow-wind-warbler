@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LogOut, UserCog, Palette } from 'lucide-react';
+import { LogOut, UserCog } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '@/hooks/use-auth';
 import { signOut } from '@/lib/firebase';
@@ -41,7 +41,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group">
             <Logo className="h-12 w-12 text-foreground transition-transform group-hover:rotate-12" />
-            <span className="text-3xl font-fredoka font-bold text-foreground">
+            <span className="text-3xl font-fredoka font-bold text-foreground self-center">
               Willow Wind Warbler
             </span>
           </Link>
