@@ -40,7 +40,7 @@ export function NewAdminForm() {
         if (result.success) {
             toast({
                 title: 'Administrator Created',
-                description: `An email has been sent to ${values.email} with login instructions.`,
+                description: `${values.email} can now sign in using the login page.`,
             });
             form.reset();
         } else {
