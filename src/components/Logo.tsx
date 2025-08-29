@@ -12,11 +12,14 @@ const Logo = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     {/* Silo */}
-    <path d="M14 21V8.5c0-2.5 1.5-4.5 3.5-4.5s3.5 2 3.5 4.5V21" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" />
-    <path d="M21 9c-2.5 0-3.5-2-3.5-4.5" />
-    <path d="M14 9c2.5 0 3.5-2 3.5-4.5" />
-    <path d="M14 13h7" />
-    <path d="M14 17h7" />
+    <path d="M14 21V9h7v12" fill="hsl(var(--accent))" />
+    <path d="M14 9l3.5-4.5L21 9" />
+    <path d="M14 21V9" stroke="hsl(var(--foreground))" />
+    <path d="M21 21V9" stroke="hsl(var(--foreground))" />
+    <path d="M14 9h7" stroke="hsl(var(--foreground))" />
+    <path d="M14 13h7" stroke="hsl(var(--foreground))" />
+    <path d="M14 17h7" stroke="hsl(var(--foreground))" />
+
 
     {/* Barn */}
     <path d="M3 21h10V9l-5-4-5 4v12z" fill="hsl(var(--secondary))" stroke="hsl(var(--foreground))"/>
@@ -25,7 +28,7 @@ const Logo = (props: SVGProps<SVGSVGElement>) => (
     <path d="M6 21V15h4v6" stroke="hsl(var(--foreground))" />
     <path d="M6 15l4 6" />
     <path d="M10 15l-4 6" />
-    
+
     {/* Window */}
     <path d="M8 12.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" fill="hsl(var(--foreground))" stroke="hsl(var(--foreground))" />
   </svg>
