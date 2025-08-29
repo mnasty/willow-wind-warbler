@@ -99,18 +99,7 @@ export default function AdminDashboard() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card>
-            <CardHeader>
-            <CardTitle>New Administrator</CardTitle>
-            <CardDescription>
-                Create a new administrator account. A secure password will be generated and emailed to the user.
-            </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <NewAdminForm />
-            </CardContent>
-        </Card>
+      <div className="space-y-8">
         <Card>
             <CardHeader>
             <CardTitle>Update Password</CardTitle>
@@ -120,6 +109,17 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
                 <UpdatePasswordForm />
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+            <CardTitle>New Administrator</CardTitle>
+            <CardDescription>
+                Create a new administrator account. A secure password will be generated and emailed to the user.
+            </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <NewAdminForm />
             </CardContent>
         </Card>
       </div>
