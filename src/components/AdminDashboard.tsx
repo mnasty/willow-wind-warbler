@@ -123,6 +123,9 @@ export default function AdminDashboard() {
                 mode="single"
                 selected={uploadDate}
                 onSelect={setUploadDate}
+                captionLayout="dropdown-buttons"
+                fromYear={2015}
+                toYear={new Date().getFullYear()}
                 initialFocus
               />
             </PopoverContent>
