@@ -151,7 +151,7 @@ export default function AdminDashboard() {
             <div className="flex justify-center py-8">
               <Loader2 className="animate-spin h-8 w-8 text-primary" />
             </div>
-          ) : (
+          ) : newsletters.length > 0 ? (
             <ul className="space-y-2">
               {newsletters.map(nl => (
                 <li key={nl.id} className="flex items-center justify-between p-3 rounded-md border bg-card hover:bg-muted/50">
@@ -183,6 +183,11 @@ export default function AdminDashboard() {
                 </li>
               ))}
             </ul>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No newsletter editions found.</p>
+              <p className="text-sm">Upload a newsletter to see it here.</p>
+            </div>
           )}
         </CardContent>
       </Card>
