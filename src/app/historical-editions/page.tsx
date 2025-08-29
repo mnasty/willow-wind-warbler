@@ -29,7 +29,7 @@ export default async function HistoricalEditionsPage() {
     <div className="space-y-8 font-fredoka">
       <header className="flex justify-between items-start">
         <div>
-            <h1 className="text-4xl font-headline font-bold text-foreground tracking-wide">Historical Editions</h1>
+            <h1 className="text-3xl font-fredoka font-bold text-foreground group-hover:text-primary self-end pb-1">Historical Editions</h1>
             <p className="text-lg text-muted-foreground mt-2">
             Browse through the archive of all past newsletter editions.
             </p>

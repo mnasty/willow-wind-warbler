@@ -61,7 +61,7 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-4xl font-headline font-bold tracking-normal">Admin Login</CardTitle>
+        <CardTitle className="text-4xl font-headline font-bold tracking-normal font-fredoka text-foreground group-hover:text-primary pb-1">Admin Login</CardTitle>
         <CardDescription>
           Enter your credentials to access the administration panel.
         </CardDescription>
