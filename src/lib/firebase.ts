@@ -25,6 +25,9 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const storage = getStorage(app);
 
+// Set a shorter retry time to avoid long waits on connection issues
+storage.maxOperationRetryTime = 20000; // 20 seconds
+
 const newsletterFolder = 'newsletters';
 
 // --- AUTH FUNCTIONS ---
