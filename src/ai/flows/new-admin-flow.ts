@@ -5,12 +5,12 @@ import { createUserWithEmailAndPassword } from '@/lib/firebase';
 import { z } from 'zod';
 import * as crypto from 'crypto';
 
-export const NewAdminInputSchema = z.object({
+const NewAdminInputSchema = z.object({
   email: z.string().email(),
 });
 export type NewAdminInput = z.infer<typeof NewAdminInputSchema>;
 
-export const NewAdminOutputSchema = z.object({
+const NewAdminOutputSchema = z.object({
   success: z.boolean(),
   error: z.string().optional(),
 });
