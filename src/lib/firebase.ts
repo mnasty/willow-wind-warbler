@@ -26,7 +26,11 @@ let mockNewsletterStore: Newsletter[] = createMockNewsletters();
 // MOCK AUTH
 let currentUser: FirebaseUser | null = null;
 const listeners: ((user: FirebaseUser | null) => void)[] = [];
-const MOCK_ADMIN_USER = { email: 'admin@example.com', password: 'password123', uid: 'admin-uid' };
+
+// Store all users in memory
+const mockUserStore: Record<string, {email: string, password: string, uid: string}> = {
+    'admin-uid': { email: 'admin@example.com', password: 'password123', uid: 'admin-uid' }
+};
 
 const notifyListeners = () => {
   listeners.forEach(listener => listener(currentUser));
@@ -49,13 +53,32 @@ export const getLatestNewsletter = async (): Promise<Newsletter | null> => {
 
 export const signInWithEmailAndPassword = async (email: string, password: string): Promise<{ user: FirebaseUser }> => {
   console.log(`Mock Firebase: Attempting sign-in for ${email}.`);
-  if (email === MOCK_ADMIN_USER.email && password === MOCK_ADMIN_USER.password) {
-    currentUser = { email: MOCK_ADMIN_USER.email, uid: MOCK_ADMIN_USER.uid };
+  const userRecord = Object.values(mockUserStore).find(u => u.email === email);
+  if (userRecord && userRecord.password === password) {
+    currentUser = { email: userRecord.email, uid: userRecord.uid };
     notifyListeners();
     return Promise.resolve({ user: currentUser });
   }
   return Promise.reject(new Error('Invalid credentials'));
 };
+
+export const createUserWithEmailAndPassword = async (email: string, password: string): Promise<{ user: FirebaseUser }> => {
+    console.log(`Mock Firebase: Attempting to create user for ${email}.`);
+    const existingUser = Object.values(mockUserStore).find(u => u.email === email);
+    if (existingUser) {
+        throw new Error('auth/email-already-in-use');
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        throw new Error('auth/invalid-email');
+    }
+
+    const uid = `user-uid-${Object.keys(mockUserStore).length + 1}`;
+    const newUser = { email, password, uid };
+    mockUserStore[uid] = newUser;
+    console.log(`Mock Firebase: User created successfully for ${email}.`);
+    return Promise.resolve({ user: { email: newUser.email, uid: newUser.uid } });
+};
+
 
 export const signOut = async (): Promise<void> => {
   console.log('Mock Firebase: Signing out.');
