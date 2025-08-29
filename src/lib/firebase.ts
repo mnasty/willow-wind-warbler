@@ -89,24 +89,31 @@ const parseDateFromName = (name: string): Date | null => {
 
 export const getNewsletterList = async (): Promise<Newsletter[]> => {
   const listRef = ref(storage, newsletterFolder);
-  const res = await listAll(listRef);
+  try {
+    const res = await listAll(listRef);
 
-  const newslettersPromises = res.items.map(async (itemRef) => {
-    const url = await getDownloadURL(itemRef);
-    const date = parseDateFromName(itemRef.name);
-    return {
-      id: itemRef.name,
-      name: itemRef.name,
-      url: url,
-      // Provide a default date if parsing fails, though it shouldn't
-      date: date || new Date(),
-    };
-  });
+    const newslettersPromises = res.items.map(async (itemRef) => {
+      const url = await getDownloadURL(itemRef);
+      const date = parseDateFromName(itemRef.name);
+      return {
+        id: itemRef.name,
+        name: itemRef.name,
+        url: url,
+        // Provide a default date if parsing fails, though it shouldn't
+        date: date || new Date(),
+      };
+    });
 
-  const newsletters = await Promise.all(newslettersPromises);
+    const newsletters = await Promise.all(newslettersPromises);
 
-  // Sort by date, most recent first
-  return newsletters.sort((a, b) => b.date.getTime() - a.date.getTime());
+    // Sort by date, most recent first
+    return newsletters.sort((a, b) => b.date.getTime() - a.date.getTime());
+  } catch (error) {
+    console.error("Error fetching newsletter list from Firebase Storage:", error);
+    // If there's an error (e.g., folder doesn't exist, permissions issue),
+    // return an empty array to prevent the app from crashing.
+    return [];
+  }
 };
 
 export const getLatestNewsletter = async (): Promise<Newsletter | null> => {
