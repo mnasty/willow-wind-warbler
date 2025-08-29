@@ -12,20 +12,16 @@ const Logo = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     {/* Silo */}
-    <path d="M18 9.5V21h3V9.5" fill="hsl(var(--muted))" stroke="hsl(var(--muted-foreground))" />
-    <path d="M18 9.5C18 7.5 19.5 6 21 6C22.5 6 24 7.5 24 9.5" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted))" />
-    <path d="M18 12h3" />
-    <path d="M18 15h3" />
-    <path d="M18 18h3" />
-
+    <path d="M17 21V10c0-2.21-1.79-4-4-4h0c-2.21 0-4 1.79-4 4v11" fill="hsl(var(--muted))" stroke="hsl(var(--muted-foreground))"/>
+    <path d="M9 10c0-2.21 1.79-4 4-4h0c2.21 0 4 1.79 4 4" stroke="hsl(var(--muted-foreground))"/>
+    <path d="M13 6V5c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v1" stroke="hsl(var(--muted-foreground))"/>
+    
     {/* Barn */}
-    <path d="M3 21h13V10L9.5 4 3 10v11z" fill="hsl(var(--destructive))" stroke="hsl(var(--foreground))" />
-    <path d="M3 10l13 0 -3 -6 -7 0 -3 6z" fill="hsl(var(--secondary-foreground))" stroke="hsl(var(--foreground))"/>
-
-    {/* Barn Windows */}
-    <path d="M7 7h1v1H7z" fill="hsl(var(--background))" strokeWidth="0.5"/>
-    <path d="M11 7h1v1h-1z" fill="hsl(var(--background))" strokeWidth="0.5"/>
-
+    <path d="M4 21h18v-8L12 5 2 13v8z" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))"/>
+    <path d="M4 21h18" stroke="hsl(var(--foreground))" strokeLinecap="butt"/>
+    <path d="M10 15h4v6h-4v-6z" fill="hsl(var(--background))" stroke="hsl(var(--foreground))"/>
+    <path d="M10 18h4"/>
+    <path d="M12 15v-1"/>
   </svg>
 );
 
