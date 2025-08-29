@@ -1,5 +1,3 @@
-# Firebase Studio
+# Willow Wind Warbler Newletter Container Site
 
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+A simple typescript react web application integrated with firebase to contain publicly viewable PDF newsletters and a web based interface for managing them.
