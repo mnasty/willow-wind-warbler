@@ -40,7 +40,7 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group">
-            <Logo className="h-8 w-8 text-foreground transition-transform group-hover:rotate-12" />
+            <Logo className="h-12 w-12 text-foreground transition-transform group-hover:rotate-12" />
             <span className="text-3xl font-fredoka font-bold text-foreground">
               Willow Wind Warbler
             </span>
