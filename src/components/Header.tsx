@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LogOut, UserCog } from 'lucide-react';
+import { LogOut, UserCog, Palette } from 'lucide-react';
 import Logo from './Logo';
 import { useAuth } from '@/hooks/use-auth';
 import { signOut } from '@/lib/firebase';
@@ -18,6 +18,7 @@ import {
 const navLinks = [
   { href: '/latest-edition', label: 'Latest Edition' },
   { href: '/historical-editions', label: 'Historical Editions' },
+  { href: '/font-examples', label: 'Font Examples' },
 ];
 
 const adminLink = { href: '/administration', label: 'Administration' };

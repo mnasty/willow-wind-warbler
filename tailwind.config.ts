@@ -14,6 +14,11 @@ export default {
         headline: ['"Lilita One"', 'cursive'],
         brand: ['"Playfair Display"', 'serif'],
         code: ['monospace'],
+        fredoka: ['"Fredoka One"', 'cursive'],
+        nunito: ['"Nunito"', 'sans-serif'],
+        lobster: ['"Lobster"', 'cursive'],
+        pacifico: ['"Pacifico"', 'cursive'],
+        comfortaa: ['"Comfortaa"', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
