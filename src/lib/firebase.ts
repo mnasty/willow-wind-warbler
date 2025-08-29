@@ -1,144 +1,121 @@
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import {
+  getAuth,
+  onAuthStateChanged as onFirebaseAuthStateChanged,
+  signInWithEmailAndPassword as firebaseSignIn,
+  createUserWithEmailAndPassword as firebaseCreateUser,
+  signOut as firebaseSignOut,
+  updatePassword
+} from 'firebase/auth';
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  listAll,
+  deleteObject
+} from 'firebase/storage';
+import { firebaseConfig } from './firebaseConfig';
 import type { FirebaseUser, Newsletter } from './types';
 
-// MOCK DATA
-const createMockNewsletters = (): Newsletter[] => {
-  const newsletters: Newsletter[] = [];
-  const today = new Date();
-  for (let year = today.getFullYear(); year >= 2020; year--) {
-    const monthCount = year === today.getFullYear() ? today.getMonth() + 1 : 12;
-    for (let month = monthCount; month >= 1; month--) {
-      // one newsletter per month for demo
-      const date = new Date(year, month - 1, 15);
-      const name = `${String(month).padStart(2, '0')}-15-${year}.pdf`;
-      newsletters.push({
-        id: name,
-        name: name,
-        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', // Placeholder PDF
-        date: date,
-      });
-    }
-  }
-  return newsletters.sort((a, b) => b.date.getTime() - a.date.getTime());
-};
+// Initialize Firebase
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const auth = getAuth(app);
+const storage = getStorage(app);
 
-let mockNewsletterStore: Newsletter[] = createMockNewsletters();
+const newsletterFolder = 'newsletters';
 
-// MOCK AUTH
-let currentUser: FirebaseUser | null = null;
-const listeners: ((user: FirebaseUser | null) => void)[] = [];
-
-// Store all users in memory
-const mockUserStore: Record<string, {email: string, password: string, uid: string}> = {
-    'admin-uid': { email: 'admin@example.com', password: 'password123', uid: 'admin-uid' }
-};
-
-const notifyListeners = () => {
-  listeners.forEach(listener => listener(currentUser));
-};
-
-// --- EXPORTED MOCK FUNCTIONS ---
-
-export const getNewsletterList = async (): Promise<Newsletter[]> => {
-  console.log('Mock Firebase: Fetching newsletter list.');
-  return Promise.resolve([...mockNewsletterStore]);
-};
-
-export const getLatestNewsletter = async (): Promise<Newsletter | null> => {
-  console.log('Mock Firebase: Fetching latest newsletter.');
-  if (mockNewsletterStore.length > 0) {
-    return Promise.resolve(mockNewsletterStore[0]);
-  }
-  return Promise.resolve(null);
-};
+// --- AUTH FUNCTIONS ---
 
 export const signInWithEmailAndPassword = async (email: string, password: string): Promise<{ user: FirebaseUser }> => {
-  console.log(`Mock Firebase: Attempting sign-in for ${email}.`);
-  const userRecord = Object.values(mockUserStore).find(u => u.email === email);
-  if (userRecord && userRecord.password === password) {
-    currentUser = { email: userRecord.email, uid: userRecord.uid };
-    notifyListeners();
-    return Promise.resolve({ user: currentUser });
-  }
-  return Promise.reject(new Error('Invalid credentials'));
+  const userCredential = await firebaseSignIn(auth, email, password);
+  return { user: userCredential.user };
 };
 
 export const createUserWithEmailAndPassword = async (email: string, password: string): Promise<{ user: FirebaseUser }> => {
-    console.log(`Mock Firebase: Attempting to create user for ${email}.`);
-    const existingUser = Object.values(mockUserStore).find(u => u.email === email);
-    if (existingUser) {
-        throw new Error('auth/email-already-in-use');
-    }
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        throw new Error('auth/invalid-email');
-    }
-
-    const uid = `user-uid-${Object.keys(mockUserStore).length + 1}`;
-    const newUser = { email, password, uid };
-    mockUserStore[uid] = newUser;
-    console.log(`Mock Firebase: User created successfully for ${email}.`);
-    return Promise.resolve({ user: { email: newUser.email, uid: newUser.uid } });
+    const userCredential = await firebaseCreateUser(auth, email, password);
+    return { user: userCredential.user };
 };
 
-
 export const signOut = async (): Promise<void> => {
-  console.log('Mock Firebase: Signing out.');
-  currentUser = null;
-  notifyListeners();
-  return Promise.resolve();
+  return firebaseSignOut(auth);
 };
 
 export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void): (() => void) => {
-  console.log('Mock Firebase: Auth state listener attached.');
-  listeners.push(callback);
-  callback(currentUser); // Immediately invoke with current state
-  return () => {
-    const index = listeners.indexOf(callback);
-    if (index > -1) {
-      listeners.splice(index, 1);
-    }
-    console.log('Mock Firebase: Auth state listener detached.');
-  };
+  return onFirebaseAuthStateChanged(auth, callback);
 };
 
-export const updateUserPassword = async (password: string): Promise<void> => {
-    console.log(`Mock Firebase: Attempting to update password.`);
-    if (!currentUser) {
-        throw new Error('No user is currently signed in.');
+export const updateUserPassword = async (newPassword: string): Promise<void> => {
+    const user = auth.currentUser;
+    if (user) {
+        return updatePassword(user, newPassword);
     }
-    const userRecord = mockUserStore[currentUser.uid];
-    if (userRecord) {
-        userRecord.password = password;
-        console.log(`Mock Firebase: Password updated successfully for ${userRecord.email}.`);
-        return Promise.resolve();
+    throw new Error('No user is currently signed in.');
+};
+
+
+// --- STORAGE FUNCTIONS ---
+
+const parseDateFromName = (name: string): Date | null => {
+    const parts = name.replace('.pdf', '').split('-');
+    if (parts.length === 3) {
+      // Assuming MM-DD-YYYY format
+      const [month, day, year] = parts.map(p => parseInt(p, 10));
+      if (!isNaN(month) && !isNaN(day) && !isNaN(year)) {
+        return new Date(year, month - 1, day);
+      }
     }
-    throw new Error('Current user not found in store.');
+    return null;
 }
 
-export const uploadNewsletter = async (file: File, date: Date): Promise<void> => {
-  console.log(`Mock Firebase: Uploading file ${file.name} for date ${date}.`);
-  const name = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}-${date.getFullYear()}.pdf`;
+export const getNewsletterList = async (): Promise<Newsletter[]> => {
+  const listRef = ref(storage, newsletterFolder);
+  const res = await listAll(listRef);
 
-  if (mockNewsletterStore.find(n => n.name === name)) {
-    return Promise.reject(new Error('A newsletter for this date already exists.'));
-  }
+  const newslettersPromises = res.items.map(async (itemRef) => {
+    const url = await getDownloadURL(itemRef);
+    const date = parseDateFromName(itemRef.name);
+    return {
+      id: itemRef.name,
+      name: itemRef.name,
+      url: url,
+      // Provide a default date if parsing fails, though it shouldn't
+      date: date || new Date(),
+    };
+  });
 
-  const newNewsletter: Newsletter = {
-    id: name,
-    name: name,
-    url: URL.createObjectURL(file), // create a temporary local URL for display
-    date: date,
-  };
-  mockNewsletterStore.unshift(newNewsletter);
-  mockNewsletterStore.sort((a, b) => b.date.getTime() - a.date.getTime());
-  return Promise.resolve();
+  const newsletters = await Promise.all(newslettersPromises);
+
+  // Sort by date, most recent first
+  return newsletters.sort((a, b) => b.date.getTime() - a.date.getTime());
 };
 
+export const getLatestNewsletter = async (): Promise<Newsletter | null> => {
+    const newsletters = await getNewsletterList();
+    return newsletters.length > 0 ? newsletters[0] : null;
+};
+
+export const uploadNewsletter = async (file: File, date: Date): Promise<void> => {
+    const fileName = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}-${date.getFullYear()}.pdf`;
+    const newsletterRef = ref(storage, `${newsletterFolder}/${fileName}`);
+
+    // Check if a file with the same name already exists
+    try {
+        await getDownloadURL(newsletterRef);
+        // If the above line doesn't throw, the file exists.
+        throw new Error('A newsletter for this date already exists.');
+    } catch (error: any) {
+        // If it's a 'storage/object-not-found' error, we can proceed.
+        if (error.code !== 'storage/object-not-found') {
+           throw error; // Re-throw other errors
+        }
+    }
+    
+    await uploadBytes(newsletterRef, file);
+};
+
+
 export const deleteNewsletter = async (fileName: string): Promise<void> => {
-  console.log(`Mock Firebase: Deleting file ${fileName}.`);
-  const initialLength = mockNewsletterStore.length;
-  mockNewsletterStore = mockNewsletterStore.filter(n => n.name !== fileName);
-  if (mockNewsletterStore.length === initialLength) {
-    return Promise.reject(new Error('File not found.'));
-  }
-  return Promise.resolve();
+  const desertRef = ref(storage, `${newsletterFolder}/${fileName}`);
+  await deleteObject(desertRef);
 };
