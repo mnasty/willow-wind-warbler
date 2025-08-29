@@ -6,16 +6,26 @@ const Logo = (props: SVGProps<SVGSVGElement>) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="2"
+    strokeWidth="1.5"
     strokeLinecap="round"
     strokeLinejoin="round"
     {...props}
   >
-    <path d="M4 22v-8l8-6 8 6v8" />
-    <path d="M12 10v12" />
-    <path d="M18 22V10l-6-4.5L6 10v12" />
-    <path d="M2 22h20" />
-    <path d="M17 2h-2a2 2 0 0 0-2 2v2" />
+    {/* Silo */}
+    <path d="M18 9.5V21h3V9.5" fill="hsl(var(--muted))" stroke="hsl(var(--muted-foreground))" />
+    <path d="M18 9.5C18 7.5 19.5 6 21 6C22.5 6 24 7.5 24 9.5" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted))" />
+    <path d="M18 12h3" />
+    <path d="M18 15h3" />
+    <path d="M18 18h3" />
+
+    {/* Barn */}
+    <path d="M3 21h13V10L9.5 4 3 10v11z" fill="hsl(var(--destructive))" stroke="hsl(var(--foreground))" />
+    <path d="M3 10l13 0 -3 -6 -7 0 -3 6z" fill="hsl(var(--secondary-foreground))" stroke="hsl(var(--foreground))"/>
+
+    {/* Barn Windows */}
+    <path d="M7 7h1v1H7z" fill="hsl(var(--background))" strokeWidth="0.5"/>
+    <path d="M11 7h1v1h-1z" fill="hsl(var(--background))" strokeWidth="0.5"/>
+
   </svg>
 );
 
