@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { createNewAdmin } from '@/ai/flows/new-admin-flow';
+import { createNewAdminUser } from '@/lib/firebase';
 import { useState } from 'react';
 import { Loader2, UserPlus } from 'lucide-react';
 
@@ -36,7 +36,7 @@ export function NewAdminForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      const result = await createNewAdmin({ email: values.email });
+      const result = await createNewAdminUser({ email: values.email });
         if (result.success) {
             toast({
                 title: 'Administrator Created',
