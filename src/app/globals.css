@@ -12,12 +12,12 @@
     --popover-foreground: 224 71% 10%;
     --primary: 229 80% 30%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 229 50% 50%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 200 60% 70%;
+    --secondary-foreground: 224 71% 10%;
     --muted: 81 20% 85%;
     --muted-foreground: 224 71% 25%;
-    --accent: 52 53% 28%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 30 80% 65%;
+    --accent-foreground: 224 71% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 81 20% 80%;
@@ -38,6 +38,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-color: #bccd9c;
+    background-color: #e3e8de;
   }
 }
