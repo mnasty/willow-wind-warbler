@@ -1,0 +1,11 @@
+# base url for passwordless auth
+NEXT_PUBLIC_BASE_URL=
+
+# firebase config variables
+PROJECT_ID=
+APP_ID=
+STORAGE_BUCKET=
+FIREBASE_API_KEY=
+AUTH_DOMAIN=
+MEASUREMENT_ID=
+MESSAGING_SENDER_ID=
