@@ -1,3 +1,5 @@
+import type { UserInfo } from "firebase/auth";
+
 export interface Newsletter {
   id: string;
   name: string;
@@ -8,4 +10,5 @@ export interface Newsletter {
 export interface FirebaseUser {
   uid: string;
   email: string | null;
+  providerData: UserInfo[];
 }

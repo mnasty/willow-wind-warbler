@@ -2,7 +2,9 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
   onAuthStateChanged as onFirebaseAuthStateChanged,
-  signInWithEmailAndPassword as firebaseSignIn,
+  sendSignInLinkToEmail as firebaseSendSignInLink,
+  isSignInWithEmailLink as firebaseIsSignInWithEmailLink,
+  signInWithEmailLink as firebaseSignInWithEmailLink,
   createUserWithEmailAndPassword as firebaseCreateUser,
   signOut as firebaseSignOut,
   updatePassword
@@ -27,11 +29,28 @@ const newsletterFolder = 'newsletters';
 
 // --- AUTH FUNCTIONS ---
 
-export const signInWithEmailAndPassword = async (email: string, password: string): Promise<{ user: FirebaseUser }> => {
-  const userCredential = await firebaseSignIn(auth, email, password);
-  return { user: userCredential.user };
+const actionCodeSettings = {
+    url: typeof window !== 'undefined' ? `${window.location.origin}/finish-login` : 'http://localhost:9002/finish-login',
+    handleCodeInApp: true,
 };
 
+export const sendSignInLinkToEmail = async (email: string): Promise<void> => {
+  await firebaseSendSignInLink(auth, email, actionCodeSettings);
+  // Save the email locally so we can use it to complete sign-in.
+  window.localStorage.setItem('emailForSignIn', email);
+};
+
+export const isSignInWithEmailLink = (url: string): boolean => {
+    return firebaseIsSignInWithEmailLink(auth, url);
+}
+
+export const signInWithEmailLink = async (email: string, url: string): Promise<{ user: FirebaseUser }> => {
+    const userCredential = await firebaseSignInWithEmailLink(auth, email, url);
+    window.localStorage.removeItem('emailForSignIn');
+    return { user: userCredential.user };
+}
+
+// Kept for creating new users in the backend flow. Password will be temporary and not used by user.
 export const createUserWithEmailAndPassword = async (email: string, password: string): Promise<{ user: FirebaseUser }> => {
     const userCredential = await firebaseCreateUser(auth, email, password);
     return { user: userCredential.user };

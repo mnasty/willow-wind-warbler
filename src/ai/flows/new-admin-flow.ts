@@ -42,7 +42,7 @@ const createNewAdminFlow = ai.defineFlow(
   },
   async ({ email }) => {
     try {
-      // 1. Generate a secure random password
+      // 1. Generate a secure random password for backend creation. User will not use this.
       const password = crypto.randomBytes(12).toString('base64').slice(0, 16);
 
       // 2. Create the user in Firebase Auth
@@ -66,8 +66,6 @@ const createNewAdminFlow = ai.defineFlow(
               .header h1 { margin: 0; color: #0D248C; font-family: 'Playfair Display', serif; }
               .content { padding: 30px; color: #333333; line-height: 1.6; }
               .content p { margin: 0 0 15px; }
-              .credentials { background-color: #f9f9f9; border-left: 4px solid #0D248C; padding: 15px; margin: 20px 0; }
-              .credentials strong { color: #0D248C; }
               .button-container { text-align: center; margin-top: 30px; }
               .button { background-color: #6F6521; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; }
               .footer { background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #666666; }
@@ -81,11 +79,7 @@ const createNewAdminFlow = ai.defineFlow(
               <div class="content">
                   <h2>Welcome, Administrator!</h2>
                   <p>An administrator account has been created for you for the Willow Wind Warbler newsletter.</p>
-                  <p>Here are your temporary login credentials. We recommend you change your password after your first login.</p>
-                  <div class="credentials">
-                      <p><strong>Email:</strong> ${email}</p>
-                      <p><strong>Password:</strong> <code>${password}</code></p>
-                  </div>
+                  <p>You can log in by clicking the button below. You will be sent a secure, one-time link to your email address to complete the sign-in process.</p>
                   <div class="button-container">
                       <a href="${loginUrl}" class="button">Login to Admin Panel</a>
                   </div>

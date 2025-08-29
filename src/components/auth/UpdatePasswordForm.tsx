@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { updateUserPassword } from '@/lib/firebase';
 import { useState } from 'react';
 import { KeyRound, Loader2 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
   newPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
@@ -29,6 +30,14 @@ const formSchema = z.object({
 export function UpdatePasswordForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  
+  // Firebase users can be created with email/password or other methods.
+  // Some auth providers don't have passwords.
+  // We can check if the user has a password set.
+  const hasPasswordProvider = user?.providerData.some(
+    (provider) => provider.providerId === 'password'
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,6 +65,14 @@ export function UpdatePasswordForm() {
     } finally {
       setIsLoading(false);
     }
+  }
+  
+  // Do not render the form if the user does not have a password.
+  // This is the case for users created via the new admin flow after email link auth was introduced.
+  // The card is still rendered in AdminDashboard, but this component returns null.
+  // This could be improved by only rendering the card if the form will be shown.
+  if (!hasPasswordProvider) {
+    return null;
   }
 
   return (
