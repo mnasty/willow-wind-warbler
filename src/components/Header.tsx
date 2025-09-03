@@ -45,7 +45,7 @@ export default function Header() {
             <Logo className="h-14 w-14 text-foreground transition-transform group-hover:rotate-12 group-hover:text-primary" />
             <span className="text-3xl font-fredoka font-bold text-foreground group-hover:text-primary self-end pb-1">
               <span className="hidden md:inline">Willow Wind Warbler</span>
-              <span className="inline md:hidden">WWW</span>
+              <span className="inline md:hidden">Warbler</span>
             </span>
           </Link>
           <nav className="hidden md:flex items-center gap-2">
