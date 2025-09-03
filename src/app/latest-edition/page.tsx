@@ -7,18 +7,12 @@ export default async function LatestEditionPage() {
 
   return (
     <div className="space-y-8 flex-grow flex flex-col">
-        <header className="flex justify-between items-start">
-            <div>
-                <h1 className="text-3xl font-fredoka font-bold text-foreground group-hover:text-primary self-end pb-1">Latest Edition</h1>
-                <p className="text-lg text-muted-foreground mt-2">
-                    Viewing the most recently published newsletter.
-                </p>
-            </div>
+        <header className="flex justify-end items-start">
             <ThemeToggle />
         </header>
 
         {latestNewsletter ? (
-            <div className="flex-grow flex flex-col rounded-lg border overflow-hidden">
+            <div className="flex-grow flex flex-col rounded-lg border overflow-hidden -mt-8">
                 <iframe
                     src={`${latestNewsletter.url}#view=FitH&navpanes=0&toolbar=0`}
                     className="w-full h-full flex-grow border-0"
