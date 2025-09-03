@@ -1,16 +1,11 @@
 import { getLatestNewsletter } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ThemeToggle } from '@/components/theme-toggle';
 
 export default async function LatestEditionPage() {
   const latestNewsletter = await getLatestNewsletter();
 
   return (
     <div className="space-y-8 flex-grow flex flex-col">
-        <header className="flex justify-end items-start">
-            <ThemeToggle />
-        </header>
-
         {latestNewsletter ? (
             <div className="flex-grow flex flex-col rounded-lg border overflow-hidden -mt-8">
                 <iframe

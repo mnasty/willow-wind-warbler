@@ -13,7 +13,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from './ui/dropdown-menu';
+import { ThemeToggle } from './theme-toggle';
 
 const navLinks = [
   { href: '/latest-edition', label: 'Latest Edition' },
@@ -72,8 +74,10 @@ export default function Header() {
                 </Link>
               </Button>
             )}
+            <ThemeToggle />
           </nav>
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">Menu</Button>
@@ -84,6 +88,7 @@ export default function Header() {
                     <Link href={link.href}>{link.label}</Link>
                   </DropdownMenuItem>
                 ))}
+                 <DropdownMenuSeparator />
                  {user ? (
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />

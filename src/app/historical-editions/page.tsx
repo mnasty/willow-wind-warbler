@@ -9,7 +9,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { ThemeToggle } from '@/components/theme-toggle';
 
 export default async function HistoricalEditionsPage() {
   const newsletters = await getNewsletterList();
@@ -34,7 +33,6 @@ export default async function HistoricalEditionsPage() {
             Browse through the archive of all past newsletter editions.
             </p>
         </div>
-        <ThemeToggle />
       </header>
 
       {newsletters.length > 0 ? (
