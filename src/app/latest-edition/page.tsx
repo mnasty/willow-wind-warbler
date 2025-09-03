@@ -20,7 +20,7 @@ export default async function LatestEditionPage() {
         {latestNewsletter ? (
             <div className="flex-grow flex flex-col rounded-lg border overflow-hidden">
                 <iframe
-                    src={`${latestNewsletter.url}#view=FitH&navpanes=0`}
+                    src={`${latestNewsletter.url}#view=FitH&navpanes=0&toolbar=0`}
                     className="w-full h-full flex-grow border-0"
                     title={latestNewsletter.name}
                 />
