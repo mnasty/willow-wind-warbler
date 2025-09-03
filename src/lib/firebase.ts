@@ -30,6 +30,7 @@ const newsletterFolder = 'newsletters';
 // --- AUTH FUNCTIONS ---
 
 export const sendSignInLinkToEmail = async (email: string): Promise<void> => {
+  console.log('window.location.origin', window.location.origin)
   const actionCodeSettings = {
     url: `${window.location.origin}/finish-login`,
     handleCodeInApp: true,

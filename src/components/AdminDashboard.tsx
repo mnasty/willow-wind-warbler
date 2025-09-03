@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar as CalendarIcon, Loader2, Trash2, Upload } from 'lucide-react';
+import { Calendar as CalendarIcon, Loader2, Trash2, Upload, FolderX } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
             <div className="flex justify-center py-8">
               <Loader2 className="animate-spin h-8 w-8 text-primary" />
             </div>
-          ) : (
+          ) : newsletters.length > 0 ? (
             <ul className="space-y-2">
               {newsletters.map(nl => (
                 <li key={nl.id} className="flex items-center justify-between p-3 rounded-md border bg-card hover:bg-muted/50">
@@ -183,6 +183,16 @@ export default function AdminDashboard() {
                 </li>
               ))}
             </ul>
+          ) : (
+             <div className="flex flex-col items-center justify-center text-center py-8 px-4 border-2 border-dashed rounded-lg">
+                <FolderX className="w-12 h-12 text-muted-foreground mb-4" />
+                <h3 className="text-xl font-semibold text-foreground">No Editions Found</h3>
+                <p className="text-muted-foreground mt-2">
+                  The storage is currently empty or has not been configured yet.
+                  <br />
+                  Upload a newsletter using the form above to get started.
+                </p>
+            </div>
           )}
         </CardContent>
       </Card>
