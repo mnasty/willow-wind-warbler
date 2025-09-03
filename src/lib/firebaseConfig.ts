@@ -4,7 +4,7 @@
 export const firebaseConfig = {
   projectId: "willow-wind-warbler",
   appId: "1:570302028471:web:91542c35b713a126a04b32",
-  storageBucket: "willow-wind-warbler.appspot.com",
+  storageBucket: "willow-wind-warbler.firebasestorage.app",
   apiKey: "AIzaSyDmHfoBHDkHfIgz5tBysAVtJyltKQqCXvw",
   authDomain: "willow-wind-warbler.firebaseapp.com",
   measurementId: "",
