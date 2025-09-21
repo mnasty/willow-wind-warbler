@@ -1,3 +1,4 @@
+
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
@@ -5,7 +6,6 @@ import {
   sendSignInLinkToEmail as firebaseSendSignInLink,
   isSignInWithEmailLink as firebaseIsSignInWithEmailLink,
   signInWithEmailLink as firebaseSignInWithEmailLink,
-  createUserWithEmailAndPassword as firebaseCreateUser,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
 import {
@@ -14,11 +14,11 @@ import {
   uploadBytes,
   getDownloadURL,
   listAll,
-  deleteObject
+  deleteObject,
+  getMetadata,
 } from 'firebase/storage';
 import { firebaseConfig } from './firebaseConfig';
 import type { FirebaseUser, Newsletter } from './types';
-import * as crypto from 'crypto';
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
@@ -26,6 +26,16 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 
 const newsletterFolder = 'newsletters';
+
+// --- URL FUNCTION ---
+
+const getPublicUrl = (fullPath: string) => {
+  const bucket = firebaseConfig.storageBucket;
+  // The path needs to be properly encoded for the URL, but not the slashes.
+  const encodedPath = fullPath.split('/').map(encodeURIComponent).join('/');
+  return `https://storage.googleapis.com/${bucket}/${encodedPath}`;
+};
+
 
 // --- AUTH FUNCTIONS ---
 
@@ -49,27 +59,6 @@ export const signInWithEmailLink = async (email: string, url: string): Promise<{
     window.localStorage.removeItem('emailForSignIn');
     return { user: userCredential.user };
 }
-
-export const createNewAdminUser = async ({ email }: { email: string }): Promise<{ success: boolean; error?: string }> => {
-    try {
-        // 1. Generate a secure random password for backend creation. User will not use this.
-        const password = crypto.randomBytes(12).toString('base64').slice(0, 16);
-
-        // 2. Create the user in Firebase Auth
-        await firebaseCreateUser(auth, email, password);
-
-        return { success: true };
-    } catch (e: any) {
-        console.error('Error in createNewAdminUser:', e);
-        let errorMessage = 'An unexpected error occurred. Please try again.';
-        if (e.code === 'auth/email-already-in-use') {
-            errorMessage = 'This email address is already registered as an administrator.';
-        } else if (e.code === 'auth/invalid-email') {
-            errorMessage = 'The email address provided is not valid.';
-        }
-        return { success: false, error: errorMessage };
-    }
-};
 
 export const signOut = async (): Promise<void> => {
   return firebaseSignOut(auth);
@@ -99,7 +88,7 @@ export const getNewsletterList = async (): Promise<Newsletter[]> => {
     const res = await listAll(listRef);
 
     const newslettersPromises = res.items.map(async (itemRef) => {
-      const url = await getDownloadURL(itemRef);
+      const url = getPublicUrl(itemRef.fullPath);
       const date = parseDateFromName(itemRef.name);
       return {
         id: itemRef.name,
@@ -132,9 +121,12 @@ export const uploadNewsletter = async (file: File, date: Date): Promise<void> =>
     const newsletterRef = ref(storage, `${newsletterFolder}/${fileName}`);
 
     try {
-        await getDownloadURL(newsletterRef);
+        await getMetadata(newsletterRef);
+        // If getMetadata succeeds, the file exists.
         throw new Error('A newsletter for this date already exists.');
     } catch (error: any) {
+        // If the error is 'storage/object-not-found', we can proceed with the upload.
+        // If it's another error, we should throw it.
         if (error.code !== 'storage/object-not-found') {
            throw error;
         }
