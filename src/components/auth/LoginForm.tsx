@@ -43,6 +43,9 @@ export function LoginForm() {
 
     const result = await sendAdminSignInLink(values.email);
 
+    // If sending failed, log the error to the console for debugging and show a toast.
+    console.log('Result Message:', result.message);
+
     if (result.success) {
       setSentToEmail(values.email);
       setEmailSent(true);
@@ -51,8 +54,6 @@ export function LoginForm() {
         description: result.message,
       });
     } else {
-      // If sending failed, log the error to the console for debugging and show a toast.
-      console.error('Login Error:', result.message);
       window.localStorage.removeItem('emailForSignIn');
       toast({
         variant: 'destructive',

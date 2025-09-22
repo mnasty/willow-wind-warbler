@@ -31,11 +31,12 @@ export async function sendAdminSignInLink(email: string): Promise<{ success: boo
     await adminAuth.getUserByEmail(email);
 
     // 2. If the user exists, send the sign-in link using the Client SDK.
+    const continueUrl = process.env.NEXT_PUBLIC_URL 
+      ? `${process.env.NEXT_PUBLIC_URL}/finish-login`
+      : 'http://localhost:9002/finish-login'; // Fallback for local dev
+
     const actionCodeSettings = {
-      // URL must be absolute
-      url: process.env.NEXT_PUBLIC_URL
-        ? `${process.env.NEXT_PUBLIC_URL}/finish-login`
-        : 'http://localhost:9002/finish-login',
+      url: continueUrl,
       handleCodeInApp: true,
     };
 
@@ -45,11 +46,10 @@ export async function sendAdminSignInLink(email: string): Promise<{ success: boo
     return { success: true, message: `A sign-in link has been sent to ${email}.` };
 
   } catch (error: any) {
-    // Log the full technical error on the server for debugging.
+    // **DEBUGGING MODIFICATION:** Log the full error and return it to the client.
+    // **WARNING:** This is insecure for production.
     console.error('[SERVER_ACTION_ERROR] sendAdminSignInLink:', error);
 
-    // **DEBUGGING MODIFICATION:** Returning the full error message to the client.
-    // **WARNING:** This is insecure for production.
     if (error.code === 'auth/user-not-found') {
       return { success: false, message: 'This email address is not registered as an administrator.' };
     }
