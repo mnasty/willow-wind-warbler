@@ -50,10 +50,9 @@ export default function LatestEditionViewer({ newsletter }: LatestEditionViewerP
   }
 
   return (
-    <div className="space-y-4 flex-grow flex flex-col">
+    <div className="flex-grow flex flex-col -mt-8">
       {newsletter ? (
-        <div className="flex-grow flex flex-col rounded-lg border overflow-hidden">
-          <div ref={containerRef} className="flex-grow overflow-auto p-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div ref={containerRef} className="flex-grow overflow-auto p-4 rounded-lg border" style={{ WebkitOverflowScrolling: 'touch' }}>
              <div className="max-w-full mx-auto flex justify-center">
                 <Document
                     file={newsletter.url}
@@ -78,7 +77,7 @@ export default function LatestEditionViewer({ newsletter }: LatestEditionViewerP
                             key={`page_${index + 1}`}
                             pageNumber={index + 1} 
                             scale={scale} 
-                            renderAnnotationLayer={true}
+                            renderAnnotationLayer={false}
                             renderTextLayer={true}
                             className="shadow-lg mb-4"
                             loading={
@@ -91,7 +90,6 @@ export default function LatestEditionViewer({ newsletter }: LatestEditionViewerP
                 </Document>
             </div>
           </div>
-        </div>
       ) : (
         <div className="flex-grow flex items-center justify-center">
           <Card className="flex flex-col items-center justify-center p-12">
