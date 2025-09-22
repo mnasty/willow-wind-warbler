@@ -44,11 +44,15 @@ export function LoginForm() {
         title: 'Check your email',
         description: `A sign-in link has been sent to ${values.email}.`,
       });
-    } catch (error) {
+    } catch (error: any) {
+      let description = 'Could not send sign-in link. Please try again.';
+      if (error.message === 'auth/user-not-found') {
+        description = 'This email address is not registered as an administrator.';
+      }
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: 'Could not send sign-in link. Please try again.',
+        description: description,
       });
     } finally {
       setIsLoading(false);
