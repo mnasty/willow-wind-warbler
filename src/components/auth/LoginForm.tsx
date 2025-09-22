@@ -51,7 +51,8 @@ export function LoginForm() {
         description: result.message,
       });
     } else {
-      // If sending failed, remove the email from local storage.
+      // If sending failed, log the error to the console for debugging and show a toast.
+      console.error('Login Error:', result.message);
       window.localStorage.removeItem('emailForSignIn');
       toast({
         variant: 'destructive',
