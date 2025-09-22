@@ -48,7 +48,6 @@ export async function sendAdminSignInLink(email: string): Promise<{ success: boo
     // Log the full technical error on the server for debugging.
     console.error('[SERVER_ACTION_ERROR] sendAdminSignInLink:', error);
 
-    // 4. Handle specific errors and return user-friendly messages.
     // **DEBUGGING MODIFICATION:** Returning the full error message to the client.
     // **WARNING:** This is insecure for production.
     if (error.code === 'auth/user-not-found') {
