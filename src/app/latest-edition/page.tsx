@@ -1,11 +1,12 @@
+
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { getLatestNewsletter } from '@/lib/firebase';
 import type { Newsletter } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, AlertTriangle, Download, ZoomIn, ZoomOut, RotateCw } from 'lucide-react';
+import { Loader2, AlertTriangle, Download, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -20,9 +21,10 @@ export default function LatestEditionPage() {
   const [loading, setLoading] = useState(true);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [scale, setScale] = useState(1.0);
-  const [rotation, setRotation] = useState(0);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchNewsletter = async () => {
@@ -40,10 +42,19 @@ export default function LatestEditionPage() {
     fetchNewsletter();
   }, []);
 
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+  const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
     setPdfError(null);
-  }
+    // Set initial scale to fit container width
+    if (containerRef.current) {
+        // Aribtrary number to get a bit of padding
+        const containerWidth = containerRef.current.clientWidth - 20; 
+        // Aribtrary page width for calculation, works for most standard PDFs
+        const pageWidth = 612; 
+        setScale(containerWidth / pageWidth);
+    }
+  }, []);
+
 
   function onDocumentLoadError(error: Error) {
     console.error("Error while loading document:", error);
@@ -61,7 +72,6 @@ export default function LatestEditionPage() {
 
   const zoomIn = () => setScale(prev => Math.min(prev + 0.2, 3));
   const zoomOut = () => setScale(prev => Math.max(prev - 0.2, 0.5));
-  const rotate = () => setRotation(prev => (prev + 90) % 360);
 
   if (loading) {
     return (
@@ -83,9 +93,6 @@ export default function LatestEditionPage() {
             <Button variant="outline" size="icon" onClick={zoomIn} disabled={scale >= 3}>
               <ZoomIn />
             </Button>
-            <Button variant="outline" size="icon" onClick={rotate}>
-              <RotateCw />
-            </Button>
             <div className="h-6 border-l mx-2"></div>
             <Button asChild variant="secondary">
               <a href={newsletter.url} download>
@@ -96,7 +103,7 @@ export default function LatestEditionPage() {
           </div>
           
           {/* PDF Viewer */}
-          <div className="flex-grow overflow-auto bg-gray-200 dark:bg-gray-800 p-4 touch-pan-y">
+          <div ref={containerRef} className="flex-grow overflow-auto bg-gray-200 dark:bg-gray-800 p-4">
              <div className="max-w-full mx-auto flex justify-center">
                 <Document
                     file={newsletter.url}
@@ -121,7 +128,6 @@ export default function LatestEditionPage() {
                             key={`page_${index + 1}`}
                             pageNumber={index + 1} 
                             scale={scale} 
-                            rotate={rotation}
                             renderAnnotationLayer={true}
                             renderTextLayer={true}
                             className="shadow-lg mb-4"
