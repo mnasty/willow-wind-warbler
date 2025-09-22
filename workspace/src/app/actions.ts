@@ -1,4 +1,3 @@
-
 'use server';
 
 import { getApp, getApps, initializeApp } from 'firebase-admin/app';
@@ -50,12 +49,13 @@ export async function sendAdminSignInLink(email: string): Promise<{ success: boo
     console.error('[SERVER_ACTION_ERROR] sendAdminSignInLink:', error);
 
     // 4. Handle specific errors and return user-friendly messages.
+    // **DEBUGGING MODIFICATION:** Returning the full error message to the client.
+    // **WARNING:** This is insecure for production.
     if (error.code === 'auth/user-not-found') {
-      // This is the expected error if the email isn't a registered admin.
       return { success: false, message: 'This email address is not registered as an administrator.' };
     }
     
-    // For any other unexpected errors, return a generic message to the user.
-    return { success: false, message: 'An unexpected server error occurred. Please check server logs.' };
+    // Return the detailed error message for debugging.
+    return { success: false, message: `An unexpected server error occurred: ${error.message}` };
   }
 }
