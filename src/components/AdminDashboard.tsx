@@ -188,7 +188,7 @@ export default function AdminDashboard() {
                 <FolderX className="w-12 h-12 text-muted-foreground mb-4" />
                 <h3 className="text-xl font-semibold text-foreground">No Editions Found</h3>
                 <p className="text-muted-foreground mt-2">
-                  The storage is currently empty or has not been configured yet.
+                  The storage is currently empty.
                   <br />
                   Upload a newsletter using the form above to get started.
                 </p>
