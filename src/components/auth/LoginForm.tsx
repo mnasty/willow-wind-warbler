@@ -56,7 +56,7 @@ export function LoginForm() {
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: result.message,
+        description: result.message, // Display the detailed error message from the server
       });
     }
 
