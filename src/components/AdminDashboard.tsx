@@ -105,7 +105,7 @@ export default function AdminDashboard() {
       <header>
         <h1 className="text-3xl font-fredoka font-bold text-foreground group-hover:text-primary self-end pb-1">Administration</h1>
         <p className="text-lg text-muted-foreground mt-2">
-          Manage newsletter editions.
+          Manage newsletter editions and site administrators.
         </p>
       </header>
 

@@ -26,10 +26,10 @@ export default function FinishLoginPage() {
         }
 
         try {
-          await signInWithEmailLink(email, url);
+          const { user } = await signInWithEmailLink(email, url);
           toast({
             title: 'Login Successful',
-            description: "Welcome back, admin!",
+            description: `Welcome back, ${user.email}!`,
           });
           router.push('/administration');
         } catch (err) {

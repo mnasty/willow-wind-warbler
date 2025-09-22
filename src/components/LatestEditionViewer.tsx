@@ -3,8 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import type { Newsletter } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, AlertTriangle, Download, ZoomIn, ZoomOut } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -50,29 +49,10 @@ export default function LatestEditionViewer({ newsletter }: LatestEditionViewerP
     });
   }
 
-  const zoomIn = () => setScale(prev => Math.min(prev + 0.2, 3));
-  const zoomOut = () => setScale(prev => Math.max(prev - 0.2, 0.5));
-
   return (
     <div className="space-y-4 flex-grow flex flex-col">
       {newsletter ? (
         <div className="flex-grow flex flex-col rounded-lg border overflow-hidden">
-          <div className="bg-muted/40 p-2 flex items-center justify-center gap-2 flex-wrap border-b">
-            <Button variant="outline" size="icon" onClick={zoomOut} disabled={scale <= 0.5}>
-              <ZoomOut />
-            </Button>
-            <Button variant="outline" size="icon" onClick={zoomIn} disabled={scale >= 3}>
-              <ZoomIn />
-            </Button>
-            <div className="h-6 border-l mx-2"></div>
-            <Button asChild variant="secondary">
-              <a href={newsletter.url} download>
-                <Download className="mr-2" />
-                Download PDF
-              </a>
-            </Button>
-          </div>
-          
           <div ref={containerRef} className="flex-grow overflow-auto p-4" style={{ WebkitOverflowScrolling: 'touch' }}>
              <div className="max-w-full mx-auto flex justify-center">
                 <Document
