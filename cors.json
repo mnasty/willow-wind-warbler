@@ -1,6 +1,6 @@
 [
     {
-        "origin": ["http://localhost:9002", "https://willow-wind-warbler.web.app", "https://willow-wind-warbler.firebaseapp.com", "studio--willow-wind-warbler.us-central1.hosted.app", "willow-wind-warbler.us-central1.hosted.app", "9000-firebase-studio-1756437182651.cluster-cxy3ise3prdrmx53pigwexthgs.cloudworkstations.dev", "https://storage.googleapis.com", "willow-wind-warbler.firebasestorage.app"],
+        "origin": ["*"],
         "method": ["GET", "POST", "PUT", "DELETE", "HEAD"],
         "maxAgeSeconds": 3600
     }

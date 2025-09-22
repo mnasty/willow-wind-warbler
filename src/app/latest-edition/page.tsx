@@ -5,7 +5,7 @@ import { getLatestNewsletter } from '@/lib/firebase';
 import type { Newsletter } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, AlertTriangle, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCw } from 'lucide-react';
+import { Loader2, AlertTriangle, Download, ZoomIn, ZoomOut, RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -19,7 +19,6 @@ export default function LatestEditionPage() {
   const [newsletter, setNewsletter] = useState<Newsletter | null>(null);
   const [loading, setLoading] = useState(true);
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1.0);
   const [rotation, setRotation] = useState(0);
   const [pdfError, setPdfError] = useState<string | null>(null);
@@ -43,22 +42,23 @@ export default function LatestEditionPage() {
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
-    setPageNumber(1); // Reset to first page on new document load
     setPdfError(null);
   }
 
   function onDocumentLoadError(error: Error) {
     console.error("Error while loading document:", error);
-    setPdfError("Failed to load PDF. The file may be corrupted or in an unsupported format.");
+    let message = "Failed to load PDF. The file may be corrupted or in an unsupported format.";
+    if (error.name === 'UnknownErrorException' && error.message.includes('Failed to fetch')) {
+        message = "Failed to load PDF due to network or CORS issue. Please check your connection and configuration.";
+    }
+    setPdfError(message);
     toast({
         variant: "destructive",
         title: "PDF Load Error",
-        description: "Could not load the PDF file. Please try downloading it instead.",
+        description: message,
     });
   }
 
-  const goToPrevPage = () => setPageNumber(prev => Math.max(prev - 1, 1));
-  const goToNextPage = () => setPageNumber(prev => Math.min(prev + 1, numPages || 1));
   const zoomIn = () => setScale(prev => Math.min(prev + 0.2, 3));
   const zoomOut = () => setScale(prev => Math.max(prev - 0.2, 0.5));
   const rotate = () => setRotation(prev => (prev + 90) % 360);
@@ -77,16 +77,6 @@ export default function LatestEditionPage() {
         <div className="flex-grow flex flex-col rounded-lg border overflow-hidden">
           {/* PDF Controls */}
           <div className="bg-muted/40 p-2 flex items-center justify-center gap-2 flex-wrap border-b">
-            <Button variant="outline" size="icon" onClick={goToPrevPage} disabled={pageNumber <= 1}>
-              <ChevronLeft />
-            </Button>
-            <span>
-              Page {pageNumber} of {numPages || '--'}
-            </span>
-            <Button variant="outline" size="icon" onClick={goToNextPage} disabled={!numPages || pageNumber >= numPages}>
-              <ChevronRight />
-            </Button>
-            <div className="h-6 border-l mx-2"></div>
             <Button variant="outline" size="icon" onClick={zoomOut} disabled={scale <= 0.5}>
               <ZoomOut />
             </Button>
@@ -106,7 +96,7 @@ export default function LatestEditionPage() {
           </div>
           
           {/* PDF Viewer */}
-          <div className="flex-grow overflow-auto bg-gray-200 dark:bg-gray-800 p-4">
+          <div className="flex-grow overflow-auto bg-gray-200 dark:bg-gray-800 p-4 touch-pan-y">
              <div className="max-w-full mx-auto flex justify-center">
                 <Document
                     file={newsletter.url}
@@ -126,19 +116,22 @@ export default function LatestEditionPage() {
                         </div>
                     }
                 >
-                    <Page 
-                        pageNumber={pageNumber} 
-                        scale={scale} 
-                        rotate={rotation}
-                        renderAnnotationLayer={true}
-                        renderTextLayer={true}
-                        className="shadow-lg"
-                        loading={
-                            <div className="flex justify-center items-center h-96">
-                                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                            </div>
-                        }
-                    />
+                    {Array.from(new Array(numPages), (el, index) => (
+                        <Page 
+                            key={`page_${index + 1}`}
+                            pageNumber={index + 1} 
+                            scale={scale} 
+                            rotate={rotation}
+                            renderAnnotationLayer={true}
+                            renderTextLayer={true}
+                            className="shadow-lg mb-4"
+                            loading={
+                                <div className="flex justify-center items-center h-96">
+                                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                                </div>
+                            }
+                        />
+                    ))}
                 </Document>
             </div>
           </div>
