@@ -5,12 +5,14 @@ import { getLatestNewsletter } from '@/lib/firebase';
 import type { Newsletter } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Download, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function LatestEditionPage() {
   const [newsletter, setNewsletter] = useState<Newsletter | null>(null);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [viewerError, setViewerError] = useState(false);
 
   useEffect(() => {
     const fetchNewsletter = async () => {
@@ -42,6 +44,12 @@ export default function LatestEditionPage() {
       }
     }
   }, [newsletter]);
+  
+  const handleIframeError = () => {
+    // This will trigger if the iframe fails to load, e.g., due to file size limits
+    setViewerError(true);
+  };
+
 
   if (loading) {
     return (
@@ -55,13 +63,27 @@ export default function LatestEditionPage() {
     <div className="space-y-8 flex-grow flex flex-col">
         {newsletter ? (
             <div className="flex-grow flex flex-col rounded-lg border overflow-hidden -mt-8">
-                {iframeSrc ? (
+                {viewerError ? (
+                  <div className="flex flex-col items-center justify-center h-full bg-muted p-8 text-center">
+                    <AlertTriangle className="w-16 h-16 text-destructive mb-4" />
+                    <h2 className="text-2xl font-bold mb-2">Preview Unavailable</h2>
+                    <p className="text-muted-foreground mb-6">
+                      This file is too large to be previewed directly on a mobile device.
+                    </p>
+                    <Button asChild>
+                      <a href={newsletter.url} download>
+                        <Download className="mr-2" />
+                        Download PDF
+                      </a>
+                    </Button>
+                  </div>
+                ) : iframeSrc ? (
                     <iframe
                         src={iframeSrc}
                         className="w-full h-full flex-grow border-0"
                         title={newsletter.name}
-                        // Allow fullscreen for a better mobile experience
                         allowFullScreen
+                        onError={handleIframeError}
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center bg-muted">
