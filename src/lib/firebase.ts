@@ -88,7 +88,9 @@ export const getNewsletterList = async (): Promise<Newsletter[]> => {
     const res = await listAll(listRef);
 
     const newslettersPromises = res.items.map(async (itemRef) => {
-      const url = getPublicUrl(itemRef.fullPath);
+      // Use the simpler public URL format since the bucket is public
+      const bucket = firebaseConfig.storageBucket;
+      const url = `https://storage.googleapis.com/${bucket}/${itemRef.fullPath}`;
       const date = parseDateFromName(itemRef.name);
       return {
         id: itemRef.name,
