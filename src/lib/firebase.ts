@@ -7,6 +7,7 @@ import {
   isSignInWithEmailLink as firebaseIsSignInWithEmailLink,
   signInWithEmailLink as firebaseSignInWithEmailLink,
   signOut as firebaseSignOut,
+  createUserWithEmailAndPassword as firebaseCreateUser,
 } from 'firebase/auth';
 import {
   getStorage,
@@ -19,6 +20,7 @@ import {
 } from 'firebase/storage';
 import { firebaseConfig } from './firebaseConfig';
 import type { FirebaseUser, Newsletter } from './types';
+import * as crypto from 'crypto';
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
@@ -66,6 +68,30 @@ export const signOut = async (): Promise<void> => {
 
 export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void): (() => void) => {
   return onFirebaseAuthStateChanged(auth, callback);
+};
+
+export const createNewAdminUser = async ({ email }: { email: string }): Promise<{ success: boolean; error?: string }> => {
+    try {
+        // 1. Generate a secure random password for backend creation. User will not use this.
+        const password = crypto.randomBytes(12).toString('base64').slice(0, 16);
+
+        // 2. Create the user in Firebase Auth
+        await firebaseCreateUser(auth, email, password);
+
+        // 3. Send the sign-in link
+        await sendSignInLinkToEmail(email);
+
+        return { success: true };
+    } catch (e: any) {
+        console.error('Error in createNewAdminUser:', e);
+        let errorMessage = 'An unexpected error occurred. Please try again.';
+        if (e.code === 'auth/email-already-in-use') {
+            errorMessage = 'This email address is already registered as an administrator.';
+        } else if (e.code === 'auth/invalid-email') {
+            errorMessage = 'The email address provided is not valid.';
+        }
+        return { success: false, error: errorMessage };
+    }
 };
 
 // --- STORAGE FUNCTIONS ---

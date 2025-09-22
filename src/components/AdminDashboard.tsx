@@ -23,6 +23,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { NewAdminForm } from './auth/NewAdminForm';
 
 export default function AdminDashboard() {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
@@ -194,6 +195,18 @@ export default function AdminDashboard() {
             </div>
           )}
         </CardContent>
+      </Card>
+
+      <Card>
+          <CardHeader>
+          <CardTitle>New Administrator</CardTitle>
+          <CardDescription>
+              Create a new administrator account. An email with a sign-in link will be sent to the user.
+          </CardDescription>
+          </CardHeader>
+          <CardContent>
+              <NewAdminForm />
+          </CardContent>
       </Card>
     </div>
   );
