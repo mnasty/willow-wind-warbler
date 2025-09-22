@@ -7,7 +7,7 @@ import {
   sendSignInLinkToEmail as firebaseSendSignInLink 
 } from 'firebase/auth';
 import { initializeApp as initializeClientApp, getApps as getClientApps, getApp as getClientApp } from 'firebase/app';
-import { firebaseConfig } from './lib/firebaseConfig';
+import { firebaseConfig } from '@/lib/firebaseConfig';
 
 
 // Initialize Firebase Admin SDK (server-side)
