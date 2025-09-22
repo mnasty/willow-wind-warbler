@@ -16,6 +16,8 @@ import { useToast } from '@/hooks/use-toast';
 // Set up the worker for react-pdf
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+export const revalidate = 0;
+
 export default function LatestEditionPage() {
   const [newsletter, setNewsletter] = useState<Newsletter | null>(null);
   const [loading, setLoading] = useState(true);
@@ -149,7 +151,7 @@ export default function LatestEditionPage() {
               <CardTitle>No Newsletters Found</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>There are currently no newsletters available. Please check back later.</p>
+              <p>There are currently no newsletters available.</p>
             </CardContent>
           </Card>
         </div>

@@ -46,8 +46,19 @@ export default function AdminDashboard() {
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      if (selectedFile.type !== 'application/pdf' || !selectedFile.name.toLowerCase().endsWith('.pdf')) {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid File Type',
+          description: 'Please select a valid PDF file.',
+        });
+        setFile(null);
+        e.target.value = ''; 
+        return;
+      }
+      setFile(selectedFile);
     }
   };
 
