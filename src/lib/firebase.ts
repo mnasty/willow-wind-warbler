@@ -29,16 +29,6 @@ const storage = getStorage(app);
 
 const newsletterFolder = 'newsletters';
 
-// --- URL FUNCTION ---
-
-const getPublicUrl = (fullPath: string) => {
-  const bucket = firebaseConfig.storageBucket;
-  // The path needs to be properly encoded for the URL, but not the slashes.
-  const encodedPath = fullPath.split('/').map(encodeURIComponent).join('/');
-  return `https://storage.googleapis.com/${bucket}/${encodedPath}`;
-};
-
-
 // --- AUTH FUNCTIONS ---
 
 export const sendSignInLinkToEmail = async (email: string): Promise<void> => {
@@ -114,14 +104,17 @@ export const getNewsletterList = async (): Promise<Newsletter[]> => {
     const res = await listAll(listRef);
 
     const newslettersPromises = res.items.map(async (itemRef) => {
-      // Use the simpler public URL format since the bucket is public
       const bucket = firebaseConfig.storageBucket;
-      const url = `https://storage.googleapis.com/${bucket}/${itemRef.fullPath}`;
+      const publicUrl = `https://storage.googleapis.com/${bucket}/${itemRef.fullPath}`;
+      const metadata = await getMetadata(itemRef);
       const date = parseDateFromName(itemRef.name);
+      // Append the last updated time as a cache-busting query parameter.
+      const cacheBustedUrl = `${publicUrl}?v=${new Date(metadata.updated).getTime()}`;
+      
       return {
         id: itemRef.name,
         name: itemRef.name,
-        url: url,
+        url: cacheBustedUrl,
         // Provide a default date if parsing fails, though it shouldn't
         date: date || new Date(),
       };
