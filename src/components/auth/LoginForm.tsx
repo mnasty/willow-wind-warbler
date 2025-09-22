@@ -15,9 +15,9 @@ import {
 } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { sendSignInLinkToEmail } from '@/lib/firebase';
 import { useState } from 'react';
 import { Loader2, Mail } from 'lucide-react';
+import { sendAdminSignInLink } from '@/app/actions';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -27,6 +27,7 @@ export function LoginForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [sentToEmail, setSentToEmail] = useState('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,35 +38,39 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    try {
-      await sendSignInLinkToEmail(values.email);
+    // Save email to local storage before sending, for the finish-login page.
+    window.localStorage.setItem('emailForSignIn', values.email);
+
+    const result = await sendAdminSignInLink(values.email);
+
+    if (result.success) {
+      setSentToEmail(values.email);
       setEmailSent(true);
       toast({
         title: 'Check your email',
-        description: `A sign-in link has been sent to ${values.email}.`,
+        description: result.message,
       });
-    } catch (error: any) {
-      let description = 'Could not send sign-in link. Please try again.';
-      if (error.message === 'auth/user-not-found') {
-        description = 'This email address is not registered as an administrator.';
-      }
+    } else {
+      // If sending failed, remove the email from local storage.
+      window.localStorage.removeItem('emailForSignIn');
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: description,
+        description: result.message,
       });
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   }
 
   if (emailSent) {
     return (
         <Card className="w-full max-w-sm">
-            <CardHeader>
-                <CardTitle className="text-4xl font-headline font-bold tracking-normal font-fredoka text-foreground group-hover:text-primary pb-1">Email Sent</CardTitle>
+            <CardHeader className="items-center text-center">
+                <Mail className="w-12 h-12 text-primary mb-2" />
+                <CardTitle className="text-2xl font-bold">Check Your Inbox</CardTitle>
                 <CardDescription>
-                A sign-in link has been sent to your email address. Please check your inbox and click the link to log in.
+                A secure sign-in link has been sent to <span className="font-semibold text-foreground">{sentToEmail}</span>. Please click the link to log in.
                 </CardDescription>
             </CardHeader>
         </Card>

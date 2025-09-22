@@ -3,12 +3,10 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
   onAuthStateChanged as onFirebaseAuthStateChanged,
-  sendSignInLinkToEmail as firebaseSendSignInLink,
   isSignInWithEmailLink as firebaseIsSignInWithEmailLink,
   signInWithEmailLink as firebaseSignInWithEmailLink,
   signOut as firebaseSignOut,
   createUserWithEmailAndPassword as firebaseCreateUser,
-  fetchSignInMethodsForEmail,
 } from 'firebase/auth';
 import {
   getStorage,
@@ -32,33 +30,7 @@ const newsletterFolder = 'newsletters';
 
 // --- AUTH FUNCTIONS ---
 
-const checkUserExists = async (email: string): Promise<boolean> => {
-    try {
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-        return methods.length > 0;
-    } catch (error) {
-        // This can happen for invalid emails, etc. Treat as user not existing.
-        console.error("Error checking for user:", error);
-        return false;
-    }
-}
-
-export const sendSignInLinkToEmail = async (email: string): Promise<void> => {
-  const userExists = await checkUserExists(email);
-  if (!userExists) {
-    // To prevent user enumeration attacks, we throw an error that can be
-    // handled generically in the UI, rather than revealing that the user doesn't exist.
-    throw new Error('auth/user-not-found');
-  }
-
-  const actionCodeSettings = {
-    url: `${window.location.origin}/finish-login`,
-    handleCodeInApp: true,
-  };
-  await firebaseSendSignInLink(auth, email, actionCodeSettings);
-  // Save the email locally so we can use it to complete sign-in.
-  window.localStorage.setItem('emailForSignIn', email);
-};
+// NOTE: sendSignInLinkToEmail has been moved to a secure server action in src/app/actions.ts
 
 export const isSignInWithEmailLink = (url: string): boolean => {
     return firebaseIsSignInWithEmailLink(auth, url);
@@ -80,16 +52,21 @@ export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void
 
 export const createNewAdminUser = async ({ email }: { email: string }): Promise<{ success: boolean; error?: string }> => {
     try {
-        // 1. Generate a secure random password for backend creation. User will not use this.
+        // This is a placeholder function. In a real app, you would securely create a user
+        // on the backend and trigger a welcome/verification email. For this project, we'll
+        // simulate creating a user and then rely on the secure server action to send logins.
+        
+        // 1. Generate a secure random password. User will not use this.
         const password = crypto.randomBytes(12).toString('base64').slice(0, 16);
 
-        // 2. Create the user in Firebase Auth
+        // 2. Create the user in Firebase Auth. This is insecure from the client and should
+        // ideally be a server-side (e.g., Cloud Function) operation.
         await firebaseCreateUser(auth, email, password);
 
-        // 3. Send the sign-in link
-        await sendSignInLinkToEmail(email);
-
+        // 3. For now, we manually alert the admin that the user is created.
+        // The new user can now use the main login form.
         return { success: true };
+
     } catch (e: any) {
         console.error('Error in createNewAdminUser:', e);
         let errorMessage = 'An unexpected error occurred. Please try again.';
