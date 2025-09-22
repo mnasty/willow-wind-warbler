@@ -85,18 +85,18 @@ export default function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {visibleNavLinks.map((link) => (
-                  <DropdownMenuItem key={link.href} asChild>
+                  <DropdownMenuItem key={link.href} asChild className="py-4 px-4 text-lg">
                     <Link href={link.href}>{link.label}</Link>
                   </DropdownMenuItem>
                 ))}
                  <DropdownMenuSeparator />
                  {user ? (
-                  <DropdownMenuItem onClick={handleSignOut}>
+                  <DropdownMenuItem onClick={handleSignOut} className="py-4 px-4 text-lg">
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
                   </DropdownMenuItem>
                 ) : (
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="py-4 px-4 text-lg">
                     <Link href="/login">
                       <UserCog className="mr-2 h-4 w-4" />
                       Admin Login

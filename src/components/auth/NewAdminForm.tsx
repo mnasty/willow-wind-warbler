@@ -35,37 +35,33 @@ export function NewAdminForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    try {
-      const result = await createNewAdminUser({ email: values.email });
-        if (result.success) {
-            toast({
-                title: 'Administrator Created',
-                description: `An email has been sent to ${values.email} with login instructions.`,
-            });
-            form.reset();
-        } else {
-            throw new Error(result.error || 'An unknown error occurred.');
-        }
-    } catch (error: any) {
+    const result = await createNewAdminUser(values);
+    setIsLoading(false);
+
+    if (result.success) {
+      toast({
+        title: 'Administrator Created',
+        description: `A sign-in link has been sent to ${values.email}.`,
+      });
+      form.reset();
+    } else {
       toast({
         variant: 'destructive',
-        title: 'Failed to Create Administrator',
-        description: error.message,
+        title: 'Creation Failed',
+        description: result.error,
       });
-    } finally {
-      setIsLoading(false);
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="flex-grow">
-              <FormLabel className="sr-only">Email</FormLabel>
+            <FormItem>
+              <FormLabel>New Admin Email</FormLabel>
               <FormControl>
                 <Input placeholder="new.admin@example.com" {...field} />
               </FormControl>
@@ -73,9 +69,8 @@ export function NewAdminForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
-          {isLoading ? <Loader2 className="animate-spin mr-2" /> : <UserPlus className="mr-2" />}
-          Add User
+        <Button type="submit" disabled={isLoading}>
+            {isLoading ? <Loader2 className="animate-spin" /> : <><UserPlus className="mr-2"/> Create Administrator</>}
         </Button>
       </form>
     </Form>

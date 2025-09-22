@@ -1,3 +1,4 @@
+
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
@@ -5,8 +6,8 @@ import {
   sendSignInLinkToEmail as firebaseSendSignInLink,
   isSignInWithEmailLink as firebaseIsSignInWithEmailLink,
   signInWithEmailLink as firebaseSignInWithEmailLink,
-  createUserWithEmailAndPassword as firebaseCreateUser,
   signOut as firebaseSignOut,
+  createUserWithEmailAndPassword as firebaseCreateUser,
 } from 'firebase/auth';
 import {
   getStorage,
@@ -14,7 +15,8 @@ import {
   uploadBytes,
   getDownloadURL,
   listAll,
-  deleteObject
+  deleteObject,
+  getMetadata,
 } from 'firebase/storage';
 import { firebaseConfig } from './firebaseConfig';
 import type { FirebaseUser, Newsletter } from './types';
@@ -50,6 +52,14 @@ export const signInWithEmailLink = async (email: string, url: string): Promise<{
     return { user: userCredential.user };
 }
 
+export const signOut = async (): Promise<void> => {
+  return firebaseSignOut(auth);
+};
+
+export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void): (() => void) => {
+  return onFirebaseAuthStateChanged(auth, callback);
+};
+
 export const createNewAdminUser = async ({ email }: { email: string }): Promise<{ success: boolean; error?: string }> => {
     try {
         // 1. Generate a secure random password for backend creation. User will not use this.
@@ -57,6 +67,9 @@ export const createNewAdminUser = async ({ email }: { email: string }): Promise<
 
         // 2. Create the user in Firebase Auth
         await firebaseCreateUser(auth, email, password);
+
+        // 3. Send the sign-in link
+        await sendSignInLinkToEmail(email);
 
         return { success: true };
     } catch (e: any) {
@@ -69,14 +82,6 @@ export const createNewAdminUser = async ({ email }: { email: string }): Promise<
         }
         return { success: false, error: errorMessage };
     }
-};
-
-export const signOut = async (): Promise<void> => {
-  return firebaseSignOut(auth);
-};
-
-export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void): (() => void) => {
-  return onFirebaseAuthStateChanged(auth, callback);
 };
 
 // --- STORAGE FUNCTIONS ---
@@ -99,12 +104,17 @@ export const getNewsletterList = async (): Promise<Newsletter[]> => {
     const res = await listAll(listRef);
 
     const newslettersPromises = res.items.map(async (itemRef) => {
-      const url = await getDownloadURL(itemRef);
+      const bucket = firebaseConfig.storageBucket;
+      const publicUrl = `https://storage.googleapis.com/${bucket}/${itemRef.fullPath}`;
+      const metadata = await getMetadata(itemRef);
       const date = parseDateFromName(itemRef.name);
+      // Append the last updated time as a cache-busting query parameter.
+      const cacheBustedUrl = `${publicUrl}?v=${new Date(metadata.updated).getTime()}`;
+      
       return {
         id: itemRef.name,
         name: itemRef.name,
-        url: url,
+        url: cacheBustedUrl,
         // Provide a default date if parsing fails, though it shouldn't
         date: date || new Date(),
       };
@@ -132,9 +142,12 @@ export const uploadNewsletter = async (file: File, date: Date): Promise<void> =>
     const newsletterRef = ref(storage, `${newsletterFolder}/${fileName}`);
 
     try {
-        await getDownloadURL(newsletterRef);
+        await getMetadata(newsletterRef);
+        // If getMetadata succeeds, the file exists.
         throw new Error('A newsletter for this date already exists.');
     } catch (error: any) {
+        // If the error is 'storage/object-not-found', we can proceed with the upload.
+        // If it's another error, we should throw it.
         if (error.code !== 'storage/object-not-found') {
            throw error;
         }

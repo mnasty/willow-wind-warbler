@@ -46,8 +46,19 @@ export default function AdminDashboard() {
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      if (selectedFile.type !== 'application/pdf' || !selectedFile.name.toLowerCase().endsWith('.pdf')) {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid File Type',
+          description: 'Please select a valid PDF file.',
+        });
+        setFile(null);
+        e.target.value = ''; 
+        return;
+      }
+      setFile(selectedFile);
     }
   };
 
@@ -94,7 +105,7 @@ export default function AdminDashboard() {
       <header>
         <h1 className="text-3xl font-fredoka font-bold text-foreground group-hover:text-primary self-end pb-1">Administration</h1>
         <p className="text-lg text-muted-foreground mt-2">
-          Manage newsletter editions and administrators.
+          Manage newsletter editions and site administrators.
         </p>
       </header>
 
@@ -188,7 +199,7 @@ export default function AdminDashboard() {
                 <FolderX className="w-12 h-12 text-muted-foreground mb-4" />
                 <h3 className="text-xl font-semibold text-foreground">No Editions Found</h3>
                 <p className="text-muted-foreground mt-2">
-                  The storage is currently empty or has not been configured yet.
+                  The storage is currently empty.
                   <br />
                   Upload a newsletter using the form above to get started.
                 </p>
@@ -196,12 +207,12 @@ export default function AdminDashboard() {
           )}
         </CardContent>
       </Card>
-      
+
       <Card>
           <CardHeader>
           <CardTitle>New Administrator</CardTitle>
           <CardDescription>
-              Create a new administrator account. A secure password will be generated and emailed to the user.
+              Create a new administrator account. An email with a sign-in link will be sent to the user.
           </CardDescription>
           </CardHeader>
           <CardContent>

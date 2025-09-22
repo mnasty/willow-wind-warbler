@@ -10,6 +10,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
+export const revalidate = 0;
+
 export default async function HistoricalEditionsPage() {
   const newsletters = await getNewsletterList();
 
