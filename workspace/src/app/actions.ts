@@ -1,5 +1,6 @@
 'use server';
 
+import { headers } from 'next/headers';
 import { getApp, getApps, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { 
@@ -30,11 +31,16 @@ export async function sendAdminSignInLink(email: string): Promise<{ success: boo
     // This happens on the server and cannot be bypassed.
     await adminAuth.getUserByEmail(email);
 
-    // 2. If the user exists, send the sign-in link using the Client SDK.
-    const continueUrl = process.env.NEXT_PUBLIC_URL 
-      ? `${process.env.NEXT_PUBLIC_URL}/finish-login`
-      : 'http://localhost:9002/finish-login'; // Fallback for local dev
-
+    // 2. Dynamically construct the continueUrl from request headers.
+    const headersList = headers();
+    // In a production environment like App Hosting, the 'x-forwarded-host' header
+    // contains the original domain requested by the client. The 'host' header
+    // might be an internal service name. We prioritize the forwarded header.
+    const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:9002';
+    // Similarly, 'x-forwarded-proto' tells us if the original request was 'https'.
+    const protocol = headersList.get('x-forwarded-proto') || 'http';
+    const continueUrl = `${protocol}://${host}/finish-login`;
+    
     const actionCodeSettings = {
       url: continueUrl,
       handleCodeInApp: true,
