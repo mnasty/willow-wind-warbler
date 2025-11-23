@@ -113,7 +113,7 @@ export default function AdminDashboard() {
         <CardHeader>
           <CardTitle>Upload New Newsletter</CardTitle>
           <CardDescription>
-            Select a PDF file and a date for the newsletter. The file will be named based on the selected date (MM-DD-YYYY.pdf).
+            Select a PDF and a date of publishing. The file will be organized based on the selected date (MM-DD-YYYY.pdf).
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row gap-4">

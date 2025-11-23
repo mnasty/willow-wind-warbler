@@ -3,7 +3,6 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
   onAuthStateChanged as onFirebaseAuthStateChanged,
-  sendSignInLinkToEmail as firebaseSendSignInLink,
   isSignInWithEmailLink as firebaseIsSignInWithEmailLink,
   signInWithEmailLink as firebaseSignInWithEmailLink,
   signOut as firebaseSignOut,
@@ -31,16 +30,7 @@ const newsletterFolder = 'newsletters';
 
 // --- AUTH FUNCTIONS ---
 
-export const sendSignInLinkToEmail = async (email: string): Promise<void> => {
-  console.log('window.location.origin', window.location.origin)
-  const actionCodeSettings = {
-    url: `${window.location.origin}/finish-login`,
-    handleCodeInApp: true,
-  };
-  await firebaseSendSignInLink(auth, email, actionCodeSettings);
-  // Save the email locally so we can use it to complete sign-in.
-  window.localStorage.setItem('emailForSignIn', email);
-};
+// NOTE: sendSignInLinkToEmail has been moved to a secure server action in src/app/actions.ts
 
 export const isSignInWithEmailLink = (url: string): boolean => {
     return firebaseIsSignInWithEmailLink(auth, url);
@@ -62,16 +52,18 @@ export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void
 
 export const createNewAdminUser = async ({ email }: { email: string }): Promise<{ success: boolean; error?: string }> => {
     try {
-        // 1. Generate a secure random password for backend creation. User will not use this.
+      
+        // 1. Generate a secure random password. User will not use this.
         const password = crypto.randomBytes(12).toString('base64').slice(0, 16);
 
-        // 2. Create the user in Firebase Auth
+        // 2. Create the user in Firebase Auth. This is insecure from the client and should
+        // ideally be a server-side (e.g., Cloud Function) operation.
         await firebaseCreateUser(auth, email, password);
 
-        // 3. Send the sign-in link
-        await sendSignInLinkToEmail(email);
-
+        // 3. For now, we manually alert the admin that the user is created.
+        // The new user can now use the main login form.
         return { success: true };
+
     } catch (e: any) {
         console.error('Error in createNewAdminUser:', e);
         let errorMessage = 'An unexpected error occurred. Please try again.';
