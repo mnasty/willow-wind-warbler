@@ -33,8 +33,9 @@ export async function sendAdminSignInLink(email: string): Promise<{ success: boo
 
     // 2. Dynamically construct the continueUrl from request headers.
     const headersList = headers();
-    const host = headersList.get('host') || 'localhost:9002';
-    // Use x-forwarded-proto in production, fallback to http for local dev
+    // In a production environment like App Hosting, 'x-forwarded-host' contains the original domain.
+    const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:9002';
+    // 'x-forwarded-proto' tells us if the original request was 'https'.
     const protocol = headersList.get('x-forwarded-proto') || 'http';
     const continueUrl = `${protocol}://${host}/finish-login`;
     
