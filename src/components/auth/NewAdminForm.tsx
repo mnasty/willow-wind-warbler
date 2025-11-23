@@ -41,7 +41,7 @@ export function NewAdminForm() {
     if (result.success) {
       toast({
         title: 'Administrator Created',
-        description: `A sign-in link has been sent to ${values.email}.`,
+        description: `Access granted to ${values.email}. They may sign in at any time.`,
       });
       form.reset();
     } else {

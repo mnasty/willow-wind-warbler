@@ -52,10 +52,7 @@ export const onAuthStateChanged = (callback: (user: FirebaseUser | null) => void
 
 export const createNewAdminUser = async ({ email }: { email: string }): Promise<{ success: boolean; error?: string }> => {
     try {
-        // This is a placeholder function. In a real app, you would securely create a user
-        // on the backend and trigger a welcome/verification email. For this project, we'll
-        // simulate creating a user and then rely on the secure server action to send logins.
-        
+      
         // 1. Generate a secure random password. User will not use this.
         const password = crypto.randomBytes(12).toString('base64').slice(0, 16);
 
