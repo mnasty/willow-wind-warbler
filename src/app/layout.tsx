@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'Willow Wind Warbler',
-  description: 'A modern newsletter archive.',
+  description: 'The official digital perch for the Willow Wind Warbler. Catch up on the latest family news, browse historical editions, and stay connected.',
 };
 
 export default function RootLayout({
