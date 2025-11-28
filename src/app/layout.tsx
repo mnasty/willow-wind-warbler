@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'Willow Wind Warbler',
-  description: 'A modern newsletter archive.',
+  description: 'The Willow Wind Warbler is your one-stop nest for all the family chirps, tweets, and tales. Get the scoop before it flies the coop!',
 };
 
 export default function RootLayout({
