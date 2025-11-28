@@ -1,0 +1,47 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  strokeWidth="1.5"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+>
+  <style>
+    path {
+      stroke: #000;
+    }
+    @media (prefers-color-scheme: dark) {
+      path {
+        stroke: #FFF;
+      }
+      .secondary-fill {
+        fill: hsl(240 3.7% 15.9%);
+      }
+      .accent-fill {
+         fill: hsl(240 3.7% 15.9%);
+      }
+    }
+     @media (prefers-color-scheme: light) {
+      .secondary-fill {
+        fill: hsl(0 0% 96.1%);
+      }
+      .accent-fill {
+        fill: hsl(0 0% 96.1%);
+      }
+    }
+  </style>
+  <path d="M14 21V9h7v12" class="accent-fill" />
+  <path d="M14 9 a3.5 3.5 0 0 1 7 0" class="accent-fill" stroke="currentColor" />
+  <path d="M14 21V9" stroke="currentColor" />
+  <path d="M21 21V9" stroke="currentColor" />
+  <path d="M14 9h7" stroke="currentColor" />
+  <path d="M14 13h7" stroke="currentColor" />
+  <path d="M14 17h7" stroke="currentColor" />
+  <path d="M3 21h10V9l-5-4-5 4v12z" class="secondary-fill" stroke="currentColor"/>
+  <path d="M13 21H3" strokeLinecap="butt"/>
+  <path d="M6 21V15h4v6" stroke="currentColor" />
+  <path d="M6 15l4 6" />
+  <path d="M10 15l-4 6" />
+  <path d="M8 12.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" fill="currentColor" stroke="currentColor" />
+</svg>
